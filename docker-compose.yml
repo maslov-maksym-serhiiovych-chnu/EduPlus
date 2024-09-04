@@ -1,0 +1,25 @@
+services:
+  courses-db:
+    image: postgres
+    container_name: courses-db
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: courses-db
+      POSTGRES_PASSWORD: courses-db
+    volumes:
+      - courses-data:/var/lib/postgresql/data
+    networks:
+      - courses-network
+    ports:
+      - "5432:5432"
+
+volumes:
+  courses-data:
+    name: courses-data
+    driver: local
+    
+networks:
+  courses-network:
+    name: curses-network
+    driver: bridge
