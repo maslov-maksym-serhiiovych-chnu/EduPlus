@@ -1,7 +1,7 @@
-﻿create or replace function read(p_id serial)
+﻿create or replace function read_course_user(p_id integer)
     returns table
             (
-                id        serial,
+                id        integer,
                 course_id integer
             )
     language plpgsql

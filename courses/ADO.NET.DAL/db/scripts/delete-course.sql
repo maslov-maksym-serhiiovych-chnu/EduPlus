@@ -1,4 +1,4 @@
-﻿create or replace procedure delete(p_id serial)
+﻿create or replace procedure delete_course(p_id integer)
     language plpgsql
 as
 $$

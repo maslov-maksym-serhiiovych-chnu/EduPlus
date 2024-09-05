@@ -1,4 +1,4 @@
-﻿create or replace procedure update(p_id serial, p_course_id integer)
+﻿create or replace procedure update_course_user(p_id integer, p_course_id integer)
     language plpgsql
 as
 $$
