@@ -1,4 +1,4 @@
-﻿create or replace procedure create_course(p_name varchar(255), p_description text)
+﻿create procedure create_course(p_name varchar(255), p_description text)
     language plpgsql
 as
 $$

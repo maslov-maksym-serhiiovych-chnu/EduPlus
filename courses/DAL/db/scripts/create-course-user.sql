@@ -1,4 +1,4 @@
-﻿create or replace procedure create_course_user(p_course_id integer)
+﻿create procedure create_course_user(p_course_id integer)
     language plpgsql
 as
 $$
