@@ -1,4 +1,4 @@
-﻿create or replace function read_by_id(p_id serial)
+﻿create or replace function read(p_id serial)
     returns table
             (
                 id          serial,
