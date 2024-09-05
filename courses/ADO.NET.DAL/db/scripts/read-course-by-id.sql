@@ -1,4 +1,4 @@
-﻿create or replace function read_course(p_id integer)
+﻿create or replace function read_course_by_id(p_id integer)
     returns table
             (
                 id          integer,

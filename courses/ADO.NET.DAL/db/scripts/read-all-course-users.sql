@@ -1,4 +1,4 @@
-﻿create or replace function read_course_user(p_id integer)
+﻿create or replace function read_all_course_users()
     returns table
             (
                 id        integer,
@@ -8,9 +8,6 @@
 as
 $$
 begin
-    return query
-        select *
-        from course_users
-        where id = p_id;
+    return query select * from course_users;
 end;
 $$;
