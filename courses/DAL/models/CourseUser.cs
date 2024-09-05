@@ -1,4 +1,4 @@
-﻿namespace ADO.NET.DAL.models;
+﻿namespace DAL.models;
 
 public class CourseUser
 {
