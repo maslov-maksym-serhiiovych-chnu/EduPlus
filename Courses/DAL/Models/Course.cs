@@ -1,4 +1,4 @@
-﻿namespace DAL.models;
+﻿namespace DAL.Models;
 
 public class Course
 {

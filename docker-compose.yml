@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: courses-db
     volumes:
       - courses-data:/var/lib/postgresql/data
-      - ./courses/DAL/db/scripts:/docker-entrypoint-initdb.d
+      - ./Courses/DAL/Data/Scripts:/docker-entrypoint-initdb.d
     networks:
       - courses-network
     ports:
@@ -18,9 +18,7 @@ services:
 volumes:
   courses-data:
     name: courses-data
-    driver: local
 
 networks:
   courses-network:
     name: curses-network
-    driver: bridge
