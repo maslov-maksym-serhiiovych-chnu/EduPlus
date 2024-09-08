@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: courses-db
     volumes:
       - courses-data:/var/lib/postgresql/data
-      - ./Courses/DAL/Data:/docker-entrypoint-initdb.d
+      - ./Courses/DAL/Data/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - courses-network
     ports:

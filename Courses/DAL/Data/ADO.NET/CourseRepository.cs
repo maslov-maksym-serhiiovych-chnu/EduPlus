@@ -1,25 +1,24 @@
-﻿using System.Data;
-using DAL.Models;
+﻿using DAL.Models;
 using Npgsql;
 
 namespace DAL.Data.ADO.NET;
 
 public class CourseRepository(NpgsqlConnection connection)
 {
-    public async Task CreateAsync(Course course)
+    public async Task Create(Course course)
     {
         await connection.OpenAsync();
 
-        const string insertCourse = "insert into courses (name, description) values ($1, $2)";
+        const string insertCourse = "insert into courses (name, description) values (@Name, @Description)";
         await using NpgsqlCommand command = new(insertCourse, connection);
-        command.Parameters.Add(new NpgsqlParameter { Value = course.Name });
-        command.Parameters.Add(new NpgsqlParameter { Value = course.Description });
+        command.Parameters.Add(new NpgsqlParameter("Name", course.Name));
+        command.Parameters.Add(new NpgsqlParameter("Description", course.Description));
 
         await command.ExecuteNonQueryAsync();
         await connection.CloseAsync();
     }
 
-    public async Task<IEnumerable<Course>> GetAllAsync()
+    public async Task<IEnumerable<Course>> GetAll()
     {
         await connection.OpenAsync();
 
@@ -43,13 +42,13 @@ public class CourseRepository(NpgsqlConnection connection)
         return courses;
     }
 
-    public async Task<Course?> GetByIdAsync(int id)
+    public async Task<Course?> GetById(int id)
     {
         await connection.OpenAsync();
 
-        const string selectCourseById = "select * from courses where id = $1";
+        const string selectCourseById = "select * from courses where id = @Id";
         await using NpgsqlCommand command = new(selectCourseById, connection);
-        command.Parameters.Add(new NpgsqlParameter { Value = id });
+        command.Parameters.Add(new NpgsqlParameter("Id", id));
 
         await using NpgsqlDataReader reader = await command.ExecuteReaderAsync();
         Course? course = null;
@@ -67,27 +66,27 @@ public class CourseRepository(NpgsqlConnection connection)
         return course;
     }
 
-    public async Task UpdateByIdAsync(int id, Course course)
+    public async Task UpdateById(int id, Course course)
     {
         await connection.OpenAsync();
 
-        const string updateCourseById = "update courses set name = $1, description = $2 where id = $3";
+        const string updateCourseById = "update courses set name = @Name, description = @Description where id = @Id";
         await using NpgsqlCommand command = new(updateCourseById, connection);
-        command.Parameters.Add(new NpgsqlParameter { Value = course.Name });
-        command.Parameters.Add(new NpgsqlParameter { Value = course.Description });
-        command.Parameters.Add(new NpgsqlParameter { Value = id });
+        command.Parameters.Add(new NpgsqlParameter("Name", course.Name));
+        command.Parameters.Add(new NpgsqlParameter("Description", course.Description));
+        command.Parameters.Add(new NpgsqlParameter("Id", id));
 
         await command.ExecuteNonQueryAsync();
         await connection.CloseAsync();
     }
 
-    public async Task DeleteByIdAsync(int id)
+    public async Task DeleteById(int id)
     {
         await connection.OpenAsync();
 
-        const string deleteCourseById = "delete from courses where id = $1";
+        const string deleteCourseById = "delete from courses where id = @Id";
         await using NpgsqlCommand command = new(deleteCourseById, connection);
-        command.Parameters.Add(new NpgsqlParameter { Value = id });
+        command.Parameters.Add(new NpgsqlParameter("Id", id));
 
         await command.ExecuteNonQueryAsync();
         await connection.CloseAsync();
