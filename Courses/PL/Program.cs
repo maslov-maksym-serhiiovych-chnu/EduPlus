@@ -3,11 +3,11 @@ using Npgsql;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
-builder.Services.AddScoped<CourseRepositoryTemp>(_ =>
+builder.Services.AddScoped<TempCourseRepository>(_ =>
 {
     string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     NpgsqlConnection connection = new(connectionString);
-    return new CourseRepositoryTemp(connection);
+    return new TempCourseRepository(connection);
 });
 
 WebApplication app = builder.Build();

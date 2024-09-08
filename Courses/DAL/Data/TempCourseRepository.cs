@@ -3,7 +3,7 @@ using Npgsql;
 
 namespace DAL.Data;
 
-public class CourseRepositoryTemp(NpgsqlConnection connection)
+public class TempCourseRepository(NpgsqlConnection connection)
 {
     public async Task Create(Course course)
     {
