@@ -1,9 +1,9 @@
 ﻿using DAL.Models;
 using Npgsql;
 
-namespace DAL.Data.ADO.NET;
+namespace DAL.Data;
 
-public class CourseRepository(NpgsqlConnection connection)
+public class CourseRepositoryTemp(NpgsqlConnection connection)
 {
     public async Task Create(Course course)
     {
