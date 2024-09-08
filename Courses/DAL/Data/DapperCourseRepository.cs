@@ -4,7 +4,7 @@ using Npgsql;
 
 namespace DAL.Data;
 
-public class CourseRepository(NpgsqlConnection connection)
+public class DapperCourseRepository(NpgsqlConnection connection)
 {
     public async Task Create(Course course)
     {
