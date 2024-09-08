@@ -79,7 +79,7 @@ public class CourseRepository(NpgsqlConnection connection)
         command.CommandType = CommandType.StoredProcedure;
         command.Parameters.Add(new NpgsqlParameter { Value = course.Name });
         command.Parameters.Add(new NpgsqlParameter { Value = course.Description });
-        command.Parameters.Add(new NpgsqlParameter { Value = course.Id });
+        command.Parameters.Add(new NpgsqlParameter { Value = id });
 
         await command.ExecuteNonQueryAsync();
 
