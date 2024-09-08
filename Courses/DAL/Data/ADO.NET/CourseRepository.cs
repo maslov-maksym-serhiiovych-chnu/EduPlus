@@ -10,13 +10,12 @@ public class CourseRepository(NpgsqlConnection connection)
     {
         await connection.OpenAsync();
 
-        await using NpgsqlCommand command = new("insert into courses (name, description) values $1, $2",
-            connection);
+        const string sql = "insert into courses (name, description) values ($1, $2)";
+        await using NpgsqlCommand command = new(sql, connection);
         command.Parameters.Add(new NpgsqlParameter { Value = course.Name });
         command.Parameters.Add(new NpgsqlParameter { Value = course.Description });
 
         await command.ExecuteNonQueryAsync();
-
         await connection.CloseAsync();
     }
 
@@ -24,9 +23,10 @@ public class CourseRepository(NpgsqlConnection connection)
     {
         await connection.OpenAsync();
 
-        await using NpgsqlCommand command = new("select * from courses", connection);
-        await using NpgsqlDataReader reader = await command.ExecuteReaderAsync();
+        const string sql = "select * from courses";
+        await using NpgsqlCommand command = new(sql, connection);
 
+        await using NpgsqlDataReader reader = await command.ExecuteReaderAsync();
         var courses = new List<Course>();
         while (await reader.ReadAsync())
         {
@@ -36,12 +36,10 @@ public class CourseRepository(NpgsqlConnection connection)
                 Name = reader.GetString(reader.GetOrdinal("name")),
                 Description = reader.GetString(reader.GetOrdinal("description"))
             };
-
             courses.Add(course);
         }
 
         await connection.CloseAsync();
-
         return courses;
     }
 
@@ -49,11 +47,11 @@ public class CourseRepository(NpgsqlConnection connection)
     {
         await connection.OpenAsync();
 
-        await using NpgsqlCommand command = new("select * from courses where id = $1", connection);
+        const string sql = "select * from courses where id = $1";
+        await using NpgsqlCommand command = new(sql, connection);
         command.Parameters.Add(new NpgsqlParameter { Value = id });
 
         await using NpgsqlDataReader reader = await command.ExecuteReaderAsync();
-
         Course? course = null;
         if (await reader.ReadAsync())
         {
@@ -66,7 +64,6 @@ public class CourseRepository(NpgsqlConnection connection)
         }
 
         await connection.CloseAsync();
-
         return course;
     }
 
@@ -74,15 +71,13 @@ public class CourseRepository(NpgsqlConnection connection)
     {
         await connection.OpenAsync();
 
-        await using NpgsqlCommand command = new("update courses set name = $1, description = $2 where id = $3",
-            connection);
-        command.CommandType = CommandType.StoredProcedure;
+        const string sql = "update courses set name = $1, description = $2 where id = $3";
+        await using NpgsqlCommand command = new(sql, connection);
         command.Parameters.Add(new NpgsqlParameter { Value = course.Name });
         command.Parameters.Add(new NpgsqlParameter { Value = course.Description });
         command.Parameters.Add(new NpgsqlParameter { Value = id });
 
         await command.ExecuteNonQueryAsync();
-
         await connection.CloseAsync();
     }
 
@@ -90,11 +85,11 @@ public class CourseRepository(NpgsqlConnection connection)
     {
         await connection.OpenAsync();
 
-        await using NpgsqlCommand command = new("delete from courses where id = $1", connection);
+        const string sql = "delete from courses where id = $1";
+        await using NpgsqlCommand command = new(sql, connection);
         command.Parameters.Add(new NpgsqlParameter { Value = id });
 
         await command.ExecuteNonQueryAsync();
-
         await connection.CloseAsync();
     }
 }
