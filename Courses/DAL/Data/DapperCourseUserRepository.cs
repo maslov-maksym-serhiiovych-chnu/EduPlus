@@ -15,12 +15,14 @@ public class DapperCourseUserRepository(NpgsqlDataSource dataSource)
         );
     }
 
+    // TODO: fix
     public async Task<IEnumerable<CourseUser>> GetAllAsync()
     {
         await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
         return await connection.QueryAsync<CourseUser>("select * from course_users");
     }
 
+    // TODO: fix
     public async Task<CourseUser?> GetAsync(int id)
     {
         await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
