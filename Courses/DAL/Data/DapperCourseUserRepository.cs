@@ -6,10 +6,10 @@ namespace DAL.Data;
 
 public class DapperCourseUserRepository(NpgsqlDataSource dataSource)
 {
-    public async Task CreateAsync(CourseUser courseUser)
+    public async Task<int> CreateAsync(CourseUser courseUser)
     {
         await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
-        await connection.ExecuteScalarAsync<int>(
+        return await connection.ExecuteScalarAsync<int>(
             "insert into course_users (course_id) values (@CourseId) returning id",
             new { courseUser.CourseId }
         );
