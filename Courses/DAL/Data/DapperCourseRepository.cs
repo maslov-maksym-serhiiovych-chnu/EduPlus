@@ -4,61 +4,44 @@ using Npgsql;
 
 namespace DAL.Data;
 
-public class DapperCourseRepository(NpgsqlConnection connection)
+public class DapperCourseRepository(NpgsqlDataSource dataSource)
 {
-    public async Task Create(Course course)
+    public async Task<int> CreateAsync(Course course)
     {
-        await connection.OpenAsync();
-
-        const string insertCourse = "insert into courses (name, description) values (@Name, @Description)";
-        var param = new { course.Name, course.Description };
-        await connection.ExecuteAsync(insertCourse, param);
-
-        await connection.CloseAsync();
+        await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
+        return await connection.ExecuteScalarAsync<int>(
+            "insert into courses (name, description) values (@Name, @Description) returning id",
+            new { course.Name, course.Description }
+        );
     }
 
-    public async Task<IEnumerable<Course>> GetAll()
+    public async Task<IEnumerable<Course>> GetAllAsync()
     {
-        await connection.OpenAsync();
-
-        const string selectCourses = "select * from courses";
-        var courses = await connection.QueryAsync<Course>(selectCourses);
-
-        await connection.CloseAsync();
-        return courses;
+        await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
+        return await connection.QueryAsync<Course>("select * from courses");
     }
 
-    public async Task<Course?> GetById(int id)
+    public async Task<Course?> GetAsync(int id)
     {
-        await connection.OpenAsync();
-
-        const string selectCourseById = "select * from courses where id = @Id";
-        var param = new { id };
-        Course? course = await connection.QuerySingleOrDefaultAsync<Course>(selectCourseById, param);
-
-        await connection.CloseAsync();
-        return course;
+        await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
+        return await connection.QuerySingleOrDefaultAsync<Course>(
+            "select * from courses where id = @Id",
+            new { id }
+        );
     }
 
-    public async Task UpdateById(int id, Course course)
+    public async Task UpdateAsync(int id, Course course)
     {
-        await connection.OpenAsync();
-
-        const string updateCourseById = "update courses set name = @Name, description = @Description where id = @Id";
-        var param = new { course.Name, course.Description, id };
-        await connection.ExecuteAsync(updateCourseById, param);
-
-        await connection.CloseAsync();
+        await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
+        await connection.ExecuteAsync(
+            "update courses set name = @Name, description = @Description where id = @Id",
+            new { course.Name, course.Description, id }
+        );
     }
 
-    public async Task DeleteById(int id)
+    public async Task DeleteAsync(int id)
     {
-        await connection.OpenAsync();
-
-        const string deleteCourseById = "delete from courses where id = @Id";
-        var param = new { id };
-        await connection.ExecuteAsync(deleteCourseById, param);
-
-        await connection.CloseAsync();
+        await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
+        await connection.ExecuteAsync("delete from courses where id = @Id", new { id });
     }
 }

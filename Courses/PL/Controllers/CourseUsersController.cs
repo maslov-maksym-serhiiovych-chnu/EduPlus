@@ -6,52 +6,49 @@ namespace PL.Controllers;
 
 [ApiController]
 [Route("/api/[controller]")]
-public class DapperCourseUsersController(DapperCourseUserRepository dapperCourseUserRepository) : ControllerBase
+public class CourseUsersController(AdoDotNetCourseUserRepository repository) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var courseUsers = await dapperCourseUserRepository.GetAll();
-        return Ok(courseUsers);
+        return Ok(await repository.GetAllAsync());
     }
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
-        CourseUser? courseUser = await dapperCourseUserRepository.GetById(id);
+        CourseUser? courseUser = await repository.GetAsync(id);
         return courseUser == null ? NotFound() : Ok(courseUser);
     }
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CourseUser courseUser)
     {
-        await dapperCourseUserRepository.Create(courseUser);
+        courseUser.Id = await repository.CreateAsync(courseUser);
         return CreatedAtAction(nameof(GetById), new { courseUser.Id }, courseUser);
     }
 
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateById(int id, [FromBody] CourseUser courseUser)
     {
-        CourseUser? existingCourseUser = await dapperCourseUserRepository.GetById(id);
-        if (existingCourseUser == null)
+        if (await repository.GetAsync(id) == null)
         {
             return NotFound();
         }
 
-        await dapperCourseUserRepository.UpdateById(id, courseUser);
+        await repository.UpdateAsync(id, courseUser);
         return NoContent();
     }
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteById(int id)
     {
-        CourseUser? existingCourseUser = await dapperCourseUserRepository.GetById(id);
-        if (existingCourseUser == null)
+        if (await repository.GetAsync(id) == null)
         {
             return NotFound();
         }
 
-        await dapperCourseUserRepository.DeleteById(id);
+        await repository.DeleteAsync(id);
         return NoContent();
     }
 }

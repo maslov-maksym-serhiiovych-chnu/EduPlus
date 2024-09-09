@@ -3,86 +3,86 @@ using Npgsql;
 
 namespace DAL.Data;
 
-public class AdoDotNetCourseUserRepository(NpgsqlConnection connection)
+public class AdoDotNetCourseUserRepository(NpgsqlDataSource dataSource)
 {
-    public async Task Create(CourseUser courseUser)
+    public async Task<int> CreateAsync(CourseUser courseUser)
     {
-        await connection.OpenAsync();
+        await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
 
-        const string insertCourseUser = "insert into course_users (course_id) values (@CourseId)";
-        await using NpgsqlCommand command = new(insertCourseUser, connection);
-        command.Parameters.Add(new NpgsqlParameter("CourseId", courseUser.CourseId));
+        await using NpgsqlCommand command = new(
+            "insert into course_users (course_id) values ($1) returning id",
+            connection
+        );
+        command.Parameters.Add(new NpgsqlParameter { Value = courseUser.CourseId });
 
-        await command.ExecuteNonQueryAsync();
-        await connection.CloseAsync();
+        return (int)(await command.ExecuteScalarAsync() ?? -1);
     }
 
-    public async Task<IEnumerable<CourseUser>> GetAll()
+    public async Task<IEnumerable<CourseUser>> GetAllAsync()
     {
-        await connection.OpenAsync();
+        await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
 
-        const string selectCourseUsers = "select * from course_users";
-        await using NpgsqlCommand command = new(selectCourseUsers, connection);
+        await using NpgsqlCommand command = new("select * from course_users", connection);
 
         await using NpgsqlDataReader reader = await command.ExecuteReaderAsync();
+
         var courseUsers = new List<CourseUser>();
         while (await reader.ReadAsync())
         {
             CourseUser courseUser = new()
             {
-                CourseId = reader.GetInt32(reader.GetOrdinal("course_id")),
+                Id = reader.GetInt32(reader.GetOrdinal("id")),
+                CourseId = reader.GetInt32(reader.GetOrdinal("course_id"))
             };
             courseUsers.Add(courseUser);
         }
 
-        await connection.CloseAsync();
         return courseUsers;
     }
 
-    public async Task<CourseUser?> GetById(int id)
+    public async Task<CourseUser?> GetAsync(int id)
     {
-        await connection.OpenAsync();
+        await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
 
-        const string selectCourseUserById = "select * from course_users where id = @Id";
-        await using NpgsqlCommand command = new(selectCourseUserById, connection);
-        command.Parameters.Add(new NpgsqlParameter("Id", id));
+        await using NpgsqlCommand command = new("select * from course_users where id = $1", connection);
+        command.Parameters.Add(new NpgsqlParameter { Value = id });
 
         await using NpgsqlDataReader reader = await command.ExecuteReaderAsync();
+
         CourseUser? courseUser = null;
         if (await reader.ReadAsync())
         {
             courseUser = new CourseUser
             {
+                Id = reader.GetInt32(reader.GetOrdinal("id")),
                 CourseId = reader.GetInt32(reader.GetOrdinal("course_id"))
             };
         }
 
-        await connection.CloseAsync();
         return courseUser;
     }
 
-    public async Task UpdateById(int id, CourseUser courseUser)
+    public async Task UpdateAsync(int id, CourseUser courseUser)
     {
-        await connection.OpenAsync();
+        await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
 
-        const string updateCourseUserById = "update course_users set course_id = @CourseId where id = @Id";
-        await using NpgsqlCommand command = new(updateCourseUserById, connection);
-        command.Parameters.Add(new NpgsqlParameter("CourseId", courseUser.CourseId));
-        command.Parameters.Add(new NpgsqlParameter("Id", id));
+        await using NpgsqlCommand command = new(
+            "update course_users set course_id = $1 where id = $2",
+            connection
+        );
+        command.Parameters.Add(new NpgsqlParameter { Value = courseUser.CourseId });
+        command.Parameters.Add(new NpgsqlParameter { Value = id });
 
         await command.ExecuteNonQueryAsync();
-        await connection.CloseAsync();
     }
 
-    public async Task DeleteById(int id)
+    public async Task DeleteAsync(int id)
     {
-        await connection.OpenAsync();
+        await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
 
-        const string deleteCourseUserById = "delete from course_users where id = @Id";
-        await using NpgsqlCommand command = new(deleteCourseUserById, connection);
-        command.Parameters.Add(new NpgsqlParameter("Id", id));
+        await using NpgsqlCommand command = new("delete from course_users where id = $1", connection);
+        command.Parameters.Add(new NpgsqlParameter { Value = id });
 
         await command.ExecuteNonQueryAsync();
-        await connection.CloseAsync();
     }
 }

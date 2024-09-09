@@ -2,14 +2,15 @@ using DAL.Data;
 using Npgsql;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllers();
 
-string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-NpgsqlConnection connection = new(connectionString);
-builder.Services.AddScoped<AdoDotNetCourseRepository>(_ => new AdoDotNetCourseRepository(connection));
-builder.Services.AddScoped<AdoDotNetCourseUserRepository>(_ => new AdoDotNetCourseUserRepository(connection));
-builder.Services.AddScoped<DapperCourseRepository>(_ => new DapperCourseRepository(connection));
-builder.Services.AddScoped<DapperCourseUserRepository>(_ => new DapperCourseUserRepository(connection));
+builder.Services.AddSingleton<NpgsqlDataSource>(_ =>
+{
+    string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
+    return NpgsqlDataSource.Create(connectionString);
+});
+builder.Services.AddControllers();
+builder.Services.AddScoped<AdoDotNetCourseRepository>();
+builder.Services.AddScoped<AdoDotNetCourseUserRepository>();
 
 WebApplication app = builder.Build();
 app.MapControllers();
