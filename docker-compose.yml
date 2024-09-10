@@ -26,7 +26,7 @@ services:
     networks:
       - tasks-network
     ports:
-      - "5433:5433"
+      - "5433:5432"
 
 volumes:
   courses-data:
