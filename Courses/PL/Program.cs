@@ -9,8 +9,8 @@ builder.Services.AddSingleton<NpgsqlDataSource>(_ =>
     return NpgsqlDataSource.Create(connectionString);
 });
 builder.Services.AddControllers();
-builder.Services.AddScoped<AdoDotNetCourseRepository>();
-builder.Services.AddScoped<AdoDotNetCourseUserRepository>();
+builder.Services.AddScoped<DapperCourseRepository>();
+builder.Services.AddScoped<DapperCourseUserRepository>();
 
 WebApplication app = builder.Build();
 app.MapControllers();
