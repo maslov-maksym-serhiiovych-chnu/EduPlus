@@ -1,8 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{B59FCF53-3F8D-42F9-BEE7-B5335BD7798F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B59FCF53-3F8D-42F9-BEE7-B5335BD7798F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B59FCF53-3F8D-42F9-BEE7-B5335BD7798F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B59FCF53-3F8D-42F9-BEE7-B5335BD7798F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B59FCF53-3F8D-42F9-BEE7-B5335BD7798F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
