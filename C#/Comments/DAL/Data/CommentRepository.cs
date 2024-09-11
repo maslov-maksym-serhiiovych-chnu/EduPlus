@@ -10,16 +10,43 @@ public class CommentRepository(NpgsqlDataSource dataSource)
     {
         await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
 
-        const string insertComment = "insert into comments(author, content) values (@author, @content) returning id";
+        const string insertQuery = "insert into comments(author, content) values (@author, @content) returning id";
         object parameters = new { comment.Author, comment.Content };
-        return await connection.ExecuteScalarAsync<int>(insertComment, parameters);
+        return await connection.ExecuteScalarAsync<int>(insertQuery, parameters);
     }
 
     public async Task<IEnumerable<Comment>> GetAllAsync()
     {
         await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
 
-        const string selectAll = "select * from comments";
-        return await connection.QueryAsync<Comment>(selectAll);
+        const string selectAllQuery = "select * from comments";
+        return await connection.QueryAsync<Comment>(selectAllQuery);
+    }
+
+    public async Task<Comment?> GetAsync(int id)
+    {
+        await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
+
+        const string selectQuery = "select * from comments where id = @id";
+        object parameter = new { id };
+        return await connection.QuerySingleOrDefaultAsync<Comment>(selectQuery, parameter);
+    }
+
+    public async Task UpdateAsync(Comment comment)
+    {
+        await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
+
+        const string updateQuery = "update comments set author = @author, content = @content where id = @id";
+        object parameters = new { comment.Author, comment.Content, comment.Id };
+        await connection.ExecuteAsync(updateQuery, parameters);
+    }
+
+    public async Task DeleteAsync(int id)
+    {
+        await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
+
+        const string deleteQuery = "delete from comments where id = @id";
+        object parameter = new { id };
+        await connection.ExecuteAsync(deleteQuery, parameter);
     }
 }
