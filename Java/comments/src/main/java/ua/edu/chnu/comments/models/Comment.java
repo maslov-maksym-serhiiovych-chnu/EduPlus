@@ -1,12 +1,13 @@
 package ua.edu.chnu.comments.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "comments")
 public class Comment {
