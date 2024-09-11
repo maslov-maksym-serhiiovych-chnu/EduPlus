@@ -6,7 +6,7 @@ namespace PL.Controllers;
 
 [ApiController]
 [Route("/api/[controller]")]
-public class CourseUsersController(AdoDotNetCourseUserRepository repository) : ControllerBase
+public class CourseUsersController(DapperCourseUserRepository repository) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAll()
