@@ -10,7 +10,7 @@ public class CommentRepository(NpgsqlDataSource dataSource)
     {
         await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
 
-        const string insertComment = "insert into comments(author, content) values ($1, $2) returning id";
+        const string insertComment = "insert into comments(author, content) values (@author, @content) returning id";
         object parameters = new { comment.Author, comment.Content };
         return await connection.ExecuteScalarAsync<int>(insertComment, parameters);
     }
