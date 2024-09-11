@@ -32,12 +32,12 @@ public class CommentRepository(NpgsqlDataSource dataSource)
         return await connection.QuerySingleOrDefaultAsync<Comment>(selectQuery, parameter);
     }
 
-    public async Task UpdateAsync(Comment comment)
+    public async Task UpdateAsync(int id, Comment comment)
     {
         await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
 
         const string updateQuery = "update comments set author = @author, content = @content where id = @id";
-        object parameters = new { comment.Author, comment.Content, comment.Id };
+        object parameters = new { comment.Author, comment.Content, id };
         await connection.ExecuteAsync(updateQuery, parameters);
     }
 
