@@ -1,18 +1,19 @@
 ﻿services:
-  comments-db-c#:
+  comments-db-csharp:
     image: postgres
-    container_name: comments-db-c#
+    container_name: comments-db-csharp
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_USER: comments-db-c#
-      POSTGRES_PASSWORD: comments-db-c#
+      POSTGRES_USER: comments-db-csharp
+      POSTGRES_PASSWORD: comments-db-csharp
     volumes:
-      - comments-data-c#:/var/lib/postgresql/data
+      - comments-data-csharp:/var/lib/postgresql/data
     networks:
-      - comments-network-c#
+      - comments-network-csharp
     ports:
       - "5432:5432"
+
   comments-db-java:
     image: postgres
     container_name: comments-db-java
@@ -29,13 +30,13 @@
       - "5433:5432"
 
 volumes:
-  comments-data-c#:
-    name: comments-data-c#
+  comments-data-csharp:
+    name: comments-data-csharp
   comments-data-java:
     name: comments-data-java
 
 networks:
-  comments-network-c#:
-    name: comments-network-c#
+  comments-network-csharp:
+    name: comments-network-csharp
   comments-network-java:
     name: comments-network-java
