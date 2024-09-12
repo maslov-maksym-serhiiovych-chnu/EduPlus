@@ -41,7 +41,7 @@ public class CommentController {
 
         Comment updated = new Comment(id, comment.getAuthor(), comment.getContent());
         repository.save(updated);
-        
+
         return ResponseEntity.noContent().build();
     }
 
@@ -53,7 +53,7 @@ public class CommentController {
         }
 
         repository.delete(comment);
-        
+
         return ResponseEntity.noContent().build();
     }
 }
