@@ -1,43 +1,24 @@
 ﻿services:
-  comments-db-csharp:
+  comments-db:
     image: postgres
-    container_name: comments-db-csharp
+    container_name: comments-db
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_USER: comments-db-csharp
-      POSTGRES_PASSWORD: comments-db-csharp
+      POSTGRES_USER: comments-db
+      POSTGRES_PASSWORD: comments-db
     volumes:
-      - comments-data-csharp:/var/lib/postgresql/data
-      - ./C#/Comments/DAL/Data/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - comments-data:/var/lib/postgresql/data
+      - ./scripts:/docker-entrypoint-initdb.d
     networks:
-      - comments-network-csharp
+      - comments-network
     ports:
       - "5432:5432"
 
-  comments-db-java:
-    image: postgres
-    container_name: comments-db-java
-    restart: always
-    shm_size: 128mb
-    environment:
-      POSTGRES_USER: comments-db-java
-      POSTGRES_PASSWORD: comments-db-java
-    volumes:
-      - comments-data-java:/var/lib/postgresql/data
-    networks:
-      - comments-network-java
-    ports:
-      - "5433:5432"
-
 volumes:
-  comments-data-csharp:
-    name: comments-data-csharp
-  comments-data-java:
-    name: comments-data-java
+  comments-data:
+    name: comments-data
 
 networks:
-  comments-network-csharp:
-    name: comments-network-csharp
-  comments-network-java:
-    name: comments-network-java
+  comments-network:
+    name: comments-network
