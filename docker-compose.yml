@@ -9,7 +9,7 @@
       POSTGRES_PASSWORD: comments-db
     volumes:
       - comments-data:/var/lib/postgresql/data
-      - ./scripts:/docker-entrypoint-initdb.d
+      - ./scripts/init-comments-db.sql:/docker-entrypoint-initdb.d/init-comments-db.sql
     networks:
       - comments-network
     ports:
