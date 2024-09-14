@@ -14,11 +14,30 @@
       - comments-network
     ports:
       - "5432:5432"
+  courses-db:
+    image: postgres
+    container_name: courses-db
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: courses-db
+      POSTGRES_PASSWORD: courses-db
+    volumes:
+      - courses-data:/var/lib/postgresql/data
+      - ./scripts/init-courses-db.sql:/docker-entrypoint-initdb.d/init-courses-db.sql
+    networks:
+      - courses-network
+    ports:
+      - "5433:5432"
 
 volumes:
   comments-data:
     name: comments-data
+  courses-data:
+    name: courses-data
 
 networks:
   comments-network:
     name: comments-network
+  courses-network:
+    name: courses-network
