@@ -9,7 +9,8 @@ public class CommentRepository(NpgsqlDataSource dataSource)
     public async Task<int> CreateAsync(Comment comment)
     {
         await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
-
+        
+        
         const string insertQuery = "insert into comments(author, content) values (@author, @content) returning id";
         object parameters = new { comment.Author, comment.Content };
         return await connection.ExecuteScalarAsync<int>(insertQuery, parameters);

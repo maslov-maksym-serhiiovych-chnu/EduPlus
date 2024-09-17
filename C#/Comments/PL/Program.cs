@@ -11,6 +11,7 @@ builder.Services.AddTransient<NpgsqlDataSource>(_ =>
     return NpgsqlDataSource.Create(connectionString);
 });
 builder.Services.AddTransient<CommentRepository>();
+builder.Services.AddTransient<CourseRepository>();
 
 WebApplication app = builder.Build();
 if (app.Environment.IsDevelopment())

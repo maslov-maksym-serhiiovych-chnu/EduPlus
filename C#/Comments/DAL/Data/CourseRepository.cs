@@ -6,38 +6,38 @@ namespace DAL.Data;
 
 public class CourseRepository(NpgsqlDataSource dataSource)
 {
-    public async Task<int> CreateAsync(Comment comment)
+    public async Task<int> CreateAsync(Course course)
     {
         await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
 
-        const string insertQuery = "insert into courses values  returning id";
-        object parameters = new { comment.Author, comment.Content };
+        const string insertQuery = "insert into courses(name, description) values (@name, @description) returning id";
+        object parameters = new { course.Name, course.Description };
         return await connection.ExecuteScalarAsync<int>(insertQuery, parameters);
     }
 
-    public async Task<IEnumerable<Comment>> GetAllAsync()
+    public async Task<IEnumerable<Course>> GetAllAsync()
     {
         await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
 
-        const string selectAllQuery = "select * from comments";
-        return await connection.QueryAsync<Comment>(selectAllQuery);
+        const string selectAllQuery = "select * from courses";
+        return await connection.QueryAsync<Course>(selectAllQuery);
     }
 
-    public async Task<Comment?> GetAsync(int id)
+    public async Task<Course?> GetAsync(int id)
     {
         await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
 
-        const string selectQuery = "select * from comments where id = @id";
+        const string selectQuery = "select * from courses where id = @id";
         object parameter = new { id };
-        return await connection.QuerySingleOrDefaultAsync<Comment>(selectQuery, parameter);
+        return await connection.QuerySingleOrDefaultAsync<Course>(selectQuery, parameter);
     }
 
-    public async Task UpdateAsync(int id, Comment comment)
+    public async Task UpdateAsync(int id, Course course)
     {
         await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
 
-        const string updateQuery = "update comments set author = @author, content = @content where id = @id";
-        object parameters = new { comment.Author, comment.Content, id };
+        const string updateQuery = "update courses set name = @name, description = @description where id = @id";
+        object parameters = new { course.Name, course.Description, id };
         await connection.ExecuteAsync(updateQuery, parameters);
     }
 
@@ -45,7 +45,7 @@ public class CourseRepository(NpgsqlDataSource dataSource)
     {
         await using NpgsqlConnection connection = await dataSource.OpenConnectionAsync();
 
-        const string deleteQuery = "delete from comments where id = @id";
+        const string deleteQuery = "delete from courses where id = @id";
         object parameter = new { id };
         await connection.ExecuteAsync(deleteQuery, parameter);
     }
