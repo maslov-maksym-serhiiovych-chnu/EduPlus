@@ -9,14 +9,17 @@ namespace PL.Controllers;
 public class CommentsController(CommentRepository repository) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<Comment>> GetAll()
     {
         var comments = await repository.GetAllAsync();
         return Ok(comments);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> Get(int id)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<Comment>> Get(int id)
     {
         Comment? comment = await repository.GetAsync(id);
         if (comment == null)
@@ -28,7 +31,8 @@ public class CommentsController(CommentRepository repository) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] Comment comment)
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    public async Task<ActionResult<Comment>> Create([FromBody] Comment comment)
     {
         comment.Id = await repository.CreateAsync(comment);
 
@@ -37,6 +41,8 @@ public class CommentsController(CommentRepository repository) : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update(int id, [FromBody] Comment comment)
     {
         Comment? existing = await repository.GetAsync(id);
@@ -50,6 +56,8 @@ public class CommentsController(CommentRepository repository) : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
         Comment? comment = await repository.GetAsync(id);
