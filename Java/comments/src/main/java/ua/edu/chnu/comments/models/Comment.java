@@ -3,7 +3,8 @@ package ua.edu.chnu.comments.models;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "comments")
 public class Comment {

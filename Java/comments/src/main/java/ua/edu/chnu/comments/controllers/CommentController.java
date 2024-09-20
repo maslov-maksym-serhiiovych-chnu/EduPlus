@@ -1,7 +1,6 @@
 package ua.edu.chnu.comments.controllers;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +10,9 @@ import ua.edu.chnu.comments.services.CommentService;
 
 import java.util.List;
 
-@Slf4j
+@AllArgsConstructor
 @RestController
 @RequestMapping("/api/comments")
-@RequiredArgsConstructor
 public class CommentController {
     private final CommentService service;
 
@@ -26,12 +24,14 @@ public class CommentController {
 
     @GetMapping("{id}")
     public ResponseEntity<CommentDTO> get(@PathVariable int id) {
+        CommentDTO comment;
         try {
-            CommentDTO comment = service.get(id);
-            return ResponseEntity.ok(comment);
+            comment = service.get(id);
         } catch (CommentNotFoundByIdException exception) {
             return ResponseEntity.notFound().build();
         }
+
+        return ResponseEntity.ok(comment);
     }
 
     @PostMapping
@@ -44,19 +44,21 @@ public class CommentController {
     public ResponseEntity<Void> update(@PathVariable int id, @RequestBody CommentDTO comment) {
         try {
             service.update(id, comment);
-            return ResponseEntity.noContent().build();
         } catch (CommentNotFoundByIdException exception) {
             return ResponseEntity.notFound().build();
         }
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
         try {
             service.delete(id);
-            return ResponseEntity.noContent().build();
         } catch (CommentNotFoundByIdException exception) {
             return ResponseEntity.notFound().build();
         }
+
+        return ResponseEntity.noContent().build();
     }
 }

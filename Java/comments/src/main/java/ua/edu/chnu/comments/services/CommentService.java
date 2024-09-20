@@ -1,6 +1,6 @@
 package ua.edu.chnu.comments.services;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.edu.chnu.comments.dtos.CommentDTO;
 import ua.edu.chnu.comments.exceptions.CommentNotFoundByIdException;
@@ -9,8 +9,8 @@ import ua.edu.chnu.comments.repositories.CommentRepository;
 
 import java.util.List;
 
+@AllArgsConstructor
 @Service
-@RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository repository;
 
@@ -40,7 +40,7 @@ public class CommentService {
 
         Comment comment = toModel(existing);
         comment.setId(id);
-        
+
         repository.save(comment);
     }
 
@@ -49,7 +49,7 @@ public class CommentService {
 
         Comment comment = toModel(commentDTO);
         comment.setId(id);
-        
+
         repository.delete(comment);
     }
 
