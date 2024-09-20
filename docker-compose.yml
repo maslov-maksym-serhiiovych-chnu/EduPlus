@@ -1,43 +1,80 @@
 ﻿services:
-  comments-db:
+  comments-db-java:
     image: postgres
-    container_name: comments-db
+    container_name: comments-db-java
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_USER: comments-db
-      POSTGRES_PASSWORD: comments-db
+      POSTGRES_USER: comments-db-java
+      POSTGRES_PASSWORD: comments-db-java
     volumes:
       - comments-data:/var/lib/postgresql/data
-      - ./scripts/init-comments-db.sql:/docker-entrypoint-initdb.d/init-comments-db.sql
     networks:
       - comments-network
     ports:
       - "5432:5432"
-  courses-db:
+
+  comments-db-csharp:
     image: postgres
-    container_name: courses-db
+    container_name: comments-db-csharp
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_USER: courses-db
-      POSTGRES_PASSWORD: courses-db
+      POSTGRES_USER: comments-db-csharp
+      POSTGRES_PASSWORD: comments-db-csharp
     volumes:
-      - courses-data:/var/lib/postgresql/data
-      - ./scripts/init-courses-db.sql:/docker-entrypoint-initdb.d/init-courses-db.sql
+      - comments-data:/var/lib/postgresql/data
     networks:
-      - courses-network
+      - comments-network
     ports:
       - "5433:5432"
 
+  courses-db-java:
+    image: postgres
+    container_name: courses-db-java
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: courses-db-java
+      POSTGRES_PASSWORD: courses-db-java
+    volumes:
+      - courses-data:/var/lib/postgresql/data
+    networks:
+      - courses-network
+    ports:
+      - "5434:5432"
+  
+  courses-db-csharp:
+    image: postgres
+    container_name: courses-db-csharp
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: courses-db-csharp
+      POSTGRES_PASSWORD: courses-db-csharp
+    volumes:
+      - courses-data:/var/lib/postgresql/data
+    networks:
+      - courses-network
+    ports:
+      - "5435:5432"
+
 volumes:
-  comments-data:
-    name: comments-data
-  courses-data:
-    name: courses-data
+  comments-data-java:
+    name: comments-data-java
+  comments-data-csharp:
+    name: comments-data-csharp
+  courses-data-java:
+    name: courses-data-java
+  courses-data-csharp:
+    name: courses-data-csharp
 
 networks:
-  comments-network:
-    name: comments-network
-  courses-network:
-    name: courses-network
+  comments-network-java:
+    name: comments-network-java
+  comments-network-csharp:
+    name: comments-network-csharp
+  courses-network-java:
+    name: courses-network-java
+  courses-network-csharp:
+    name: courses-network-csharp
