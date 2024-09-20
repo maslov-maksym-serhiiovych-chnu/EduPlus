@@ -8,9 +8,9 @@
       POSTGRES_USER: comments-db-java
       POSTGRES_PASSWORD: comments-db-java
     volumes:
-      - comments-data:/var/lib/postgresql/data
+      - comments-data-java:/var/lib/postgresql/data
     networks:
-      - comments-network
+      - comments-network-java
     ports:
       - "5432:5432"
 
@@ -23,9 +23,9 @@
       POSTGRES_USER: comments-db-csharp
       POSTGRES_PASSWORD: comments-db-csharp
     volumes:
-      - comments-data:/var/lib/postgresql/data
+      - comments-data-csharp:/var/lib/postgresql/data
     networks:
-      - comments-network
+      - comments-network-csharp
     ports:
       - "5433:5432"
 
@@ -38,9 +38,9 @@
       POSTGRES_USER: courses-db-java
       POSTGRES_PASSWORD: courses-db-java
     volumes:
-      - courses-data:/var/lib/postgresql/data
+      - courses-data-java:/var/lib/postgresql/data
     networks:
-      - courses-network
+      - courses-network-java
     ports:
       - "5434:5432"
   
@@ -53,9 +53,9 @@
       POSTGRES_USER: courses-db-csharp
       POSTGRES_PASSWORD: courses-db-csharp
     volumes:
-      - courses-data:/var/lib/postgresql/data
+      - courses-data-csharp:/var/lib/postgresql/data
     networks:
-      - courses-network
+      - courses-network-csharp
     ports:
       - "5435:5432"
 
