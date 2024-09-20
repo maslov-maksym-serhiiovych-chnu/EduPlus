@@ -73,10 +73,6 @@ public class CommentService {
             return null;
         }
 
-        CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setAuthor(comment.getAuthor());
-        commentDTO.setContent(comment.getContent());
-
-        return commentDTO;
+        return new CommentDTO(comment.getAuthor(), comment.getContent());
     }
 }
