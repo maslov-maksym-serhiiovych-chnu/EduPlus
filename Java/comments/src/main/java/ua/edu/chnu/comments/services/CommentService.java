@@ -29,28 +29,31 @@ public class CommentService {
     }
 
     public CommentDTO get(int id) {
-        Comment comment = repository.findById(id).orElseThrow(() -> new CommentNotFoundByIdException(id));
+        checkExistence(id);
+
+        Comment comment = repository.findById(id).orElse(null);
         return toDTO(comment);
     }
 
     public void update(int id, CommentDTO commentDTO) {
-        CommentDTO existing = get(id);
-        existing.setAuthor(commentDTO.getAuthor());
-        existing.setContent(commentDTO.getContent());
+        checkExistence(id);
 
-        Comment comment = toModel(existing);
+        Comment comment = toModel(commentDTO);
         comment.setId(id);
 
         repository.save(comment);
     }
 
     public void delete(int id) {
-        CommentDTO commentDTO = get(id);
+        checkExistence(id);
 
-        Comment comment = toModel(commentDTO);
-        comment.setId(id);
+        repository.deleteById(id);
+    }
 
-        repository.delete(comment);
+    private void checkExistence(int id) {
+        if (!repository.existsById(id)) {
+            throw new CommentNotFoundByIdException(id);
+        }
     }
 
     private Comment toModel(CommentDTO commentDTO) {

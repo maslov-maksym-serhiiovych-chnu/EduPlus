@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.edu.chnu.comments.dtos.CommentDTO;
-import ua.edu.chnu.comments.exceptions.CommentNotFoundByIdException;
 import ua.edu.chnu.comments.services.CommentService;
 
 import java.util.List;
@@ -24,13 +23,7 @@ public class CommentController {
 
     @GetMapping("{id}")
     public ResponseEntity<CommentDTO> get(@PathVariable int id) {
-        CommentDTO comment;
-        try {
-            comment = service.get(id);
-        } catch (CommentNotFoundByIdException exception) {
-            return ResponseEntity.notFound().build();
-        }
-
+        CommentDTO comment = service.get(id);
         return ResponseEntity.ok(comment);
     }
 
@@ -42,23 +35,13 @@ public class CommentController {
 
     @PutMapping("{id}")
     public ResponseEntity<Void> update(@PathVariable int id, @RequestBody CommentDTO comment) {
-        try {
-            service.update(id, comment);
-        } catch (CommentNotFoundByIdException exception) {
-            return ResponseEntity.notFound().build();
-        }
-
+        service.update(id, comment);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
-        try {
-            service.delete(id);
-        } catch (CommentNotFoundByIdException exception) {
-            return ResponseEntity.notFound().build();
-        }
-
+        service.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
