@@ -26,14 +26,12 @@ public class CommentController {
 
     @GetMapping("{id}")
     public ResponseEntity<CommentDTO> get(@PathVariable int id) {
-        CommentDTO comment;
         try {
-            comment = service.get(id);
+            CommentDTO comment = service.get(id);
+            return ResponseEntity.ok(comment);
         } catch (CommentNotFoundByIdException exception) {
             return ResponseEntity.notFound().build();
         }
-
-        return ResponseEntity.ok(comment);
     }
 
     @PostMapping
@@ -46,21 +44,19 @@ public class CommentController {
     public ResponseEntity<Void> update(@PathVariable int id, @RequestBody CommentDTO comment) {
         try {
             service.update(id, comment);
+            return ResponseEntity.noContent().build();
         } catch (CommentNotFoundByIdException exception) {
             return ResponseEntity.notFound().build();
         }
-
-        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
         try {
             service.delete(id);
+            return ResponseEntity.noContent().build();
         } catch (CommentNotFoundByIdException exception) {
             return ResponseEntity.notFound().build();
         }
-
-        return ResponseEntity.noContent().build();
     }
 }

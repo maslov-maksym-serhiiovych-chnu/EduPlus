@@ -17,7 +17,7 @@ public class CommentService {
     public CommentDTO create(CommentDTO commentDTO) {
         Comment comment = toModel(commentDTO);
         repository.save(comment);
-        
+
         return commentDTO;
     }
 
@@ -29,28 +29,28 @@ public class CommentService {
     }
 
     public CommentDTO get(int id) {
-        Comment comment = repository.findById(id).orElse(null);
+        Comment comment = repository.findById(id).orElseThrow(() -> new CommentNotFoundByIdException(id));
         return toDTO(comment);
     }
 
     public void update(int id, CommentDTO commentDTO) {
-        if (!repository.existsById(id)) {
-            throw new CommentNotFoundByIdException(id);
-        }
+        CommentDTO existing = get(id);
+        existing.setAuthor(commentDTO.getAuthor());
+        existing.setContent(commentDTO.getContent());
 
-        Comment comment = toModel(commentDTO);
+        Comment comment = toModel(existing);
         comment.setId(id);
-
+        
         repository.save(comment);
     }
 
     public void delete(int id) {
         CommentDTO commentDTO = get(id);
-        if (commentDTO == null) {
-            throw new CommentNotFoundByIdException(id);
-        }
 
-        repository.delete(toModel(commentDTO));
+        Comment comment = toModel(commentDTO);
+        comment.setId(id);
+        
+        repository.delete(comment);
     }
 
     private Comment toModel(CommentDTO commentDTO) {
