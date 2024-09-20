@@ -1,4 +1,4 @@
-﻿create table if not exists comments
+﻿create table comments
 (
     id      serial primary key,
     author  varchar(255) not null,
