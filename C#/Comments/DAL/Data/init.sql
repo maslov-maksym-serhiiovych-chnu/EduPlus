@@ -1,6 +1,6 @@
-﻿create table comments
+﻿CREATE TABLE IF NOT EXISTS comments
 (
-    id      serial primary key,
-    author  varchar(255) not null,
-    content text         not null
+    id      SERIAL PRIMARY KEY,
+    author  VARCHAR(255) NOT NULL,
+    content TEXT         NOT NULL
 )

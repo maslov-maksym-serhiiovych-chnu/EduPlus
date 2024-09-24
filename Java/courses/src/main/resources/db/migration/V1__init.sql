@@ -1,6 +1,6 @@
-create table courses
+CREATE TABLE courses
 (
-    id          serial primary key,
-    name        varchar(255) not null,
-    description text
+    id          SERIAL PRIMARY KEY,
+    name        VARCHAR(255) NOT NULL,
+    description TEXT
 )
