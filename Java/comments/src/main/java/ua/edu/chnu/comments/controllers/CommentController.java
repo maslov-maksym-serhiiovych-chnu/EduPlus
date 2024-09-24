@@ -18,11 +18,11 @@ public class CommentController {
 
     @GetMapping
     public ResponseEntity<List<CommentDTO>> getAll() {
-        var commentDTOS = service.getAll()
+        var commentDTOs = service.getAll()
                 .stream()
                 .map(CommentController::toDTO)
                 .toList();
-        return ResponseEntity.ok(commentDTOS);
+        return ResponseEntity.ok(commentDTOs);
     }
 
     @GetMapping("{id}")
