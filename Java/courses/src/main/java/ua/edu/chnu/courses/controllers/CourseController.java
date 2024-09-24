@@ -1,59 +1,88 @@
 package ua.edu.chnu.courses.controllers;
 
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ua.edu.chnu.courses.dtos.CourseDTO;
 import ua.edu.chnu.courses.models.Course;
-import ua.edu.chnu.courses.repositories.CourseRepository;
+import ua.edu.chnu.courses.services.CourseService;
 
-import java.util.Optional;
+import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/courses")
-@RequiredArgsConstructor
 public class CourseController {
-    private final CourseRepository repository;
+    private final CourseService service;
 
     @GetMapping
-    public ResponseEntity<Iterable<Course>> getAll() {
-        var courses = repository.findAll();
-        return ResponseEntity.ok(courses);
+    public ResponseEntity<List<CourseDTO>> getAll() {
+        var courseDTOS = service.getAll()
+                .stream()
+                .map(CourseController::toDTO)
+                .toList();
+        return ResponseEntity.ok(courseDTOS);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Course> get(@PathVariable int id) {
-        Optional<Course> course = repository.findById(id);
-        return course.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<CourseDTO> get(@PathVariable int id) {
+        Course course = service.get(id);
+
+        CourseDTO courseDTO = toDTO(course);
+        return ResponseEntity.ok(courseDTO);
     }
 
     @PostMapping
-    public ResponseEntity<Course> create(@RequestBody Course course) {
-        Course saved = repository.save(course);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    public ResponseEntity<CourseDTO> create(@RequestBody CourseDTO courseDTO) {
+        Course course = toModel(courseDTO);
+
+        Course created = service.create(course);
+
+        CourseDTO createdDTO = toDTO(created);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdDTO);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Void> update(@PathVariable int id, @RequestBody Course course) {
-        if (!repository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<CourseDTO> update(@PathVariable int id, @RequestBody CourseDTO courseDTO) {
+        Course course = toModel(courseDTO);
 
-        Course updated = new Course(id, course.getName(), course.getDescription());
-        repository.save(updated);
+        Course updated = service.update(id, course);
 
-        return ResponseEntity.noContent().build();
+        CourseDTO updatedDTO = toDTO(updated);
+        return ResponseEntity.ok(updatedDTO);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
-        Course course = repository.findById(id).orElse(null);
-        if (course == null) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<CourseDTO> delete(@PathVariable int id) {
+        Course deleted = service.delete(id);
+
+        CourseDTO deletedDTO = toDTO(deleted);
+        return ResponseEntity.ok(deletedDTO);
+    }
+
+    public static Course toModel(CourseDTO courseDTO) {
+        if (courseDTO == null) {
+            return null;
         }
 
-        repository.delete(course);
+        Course course = new Course();
+        course.setName(courseDTO.getName());
+        course.setDescription(courseDTO.getDescription());
 
-        return ResponseEntity.noContent().build();
+        return course;
+    }
+
+    public static CourseDTO toDTO(Course course) {
+        if (course == null) {
+            return null;
+        }
+
+        CourseDTO courseDTO = new CourseDTO();
+        courseDTO.setName(course.getName());
+        courseDTO.setDescription(course.getDescription());
+
+        return courseDTO;
     }
 }
