@@ -1,78 +1,53 @@
 package ua.edu.chnu.comments.services;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ua.edu.chnu.comments.dtos.CommentDTO;
 import ua.edu.chnu.comments.exceptions.CommentNotFoundByIdException;
 import ua.edu.chnu.comments.models.Comment;
 import ua.edu.chnu.comments.repositories.CommentRepository;
 
 import java.util.List;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class CommentService {
     private final CommentRepository repository;
 
-    public CommentDTO create(CommentDTO commentDTO) {
-        Comment comment = toModel(commentDTO);
-        repository.save(comment);
-
-        return commentDTO;
-    }
-
-    public List<CommentDTO> getAll() {
-        return repository.findAll()
-                .stream()
-                .map(this::toDTO)
-                .toList();
-    }
-
-    public CommentDTO get(int id) {
-        checkExistence(id);
-
-        Comment comment = repository.findById(id).orElse(null);
-        return toDTO(comment);
-    }
-
-    public void update(int id, CommentDTO commentDTO) {
-        checkExistence(id);
-
-        Comment comment = toModel(commentDTO);
-        comment.setId(id);
-
-        repository.save(comment);
-    }
-
-    public void delete(int id) {
-        checkExistence(id);
-
-        repository.deleteById(id);
-    }
-
-    private void checkExistence(int id) {
-        if (!repository.existsById(id)) {
-            throw new CommentNotFoundByIdException(id);
-        }
-    }
-
-    private Comment toModel(CommentDTO commentDTO) {
-        if (commentDTO == null) {
+    public Comment create(Comment created) {
+        //TODO: migrate to custom exception
+        if (created == null) {
             return null;
         }
 
-        Comment comment = new Comment();
-        comment.setAuthor(commentDTO.getAuthor());
-        comment.setContent(commentDTO.getContent());
-
-        return comment;
+        return repository.save(created);
     }
 
-    private CommentDTO toDTO(Comment comment) {
+    public List<Comment> getAll() {
+        return repository.findAll();
+    }
+
+    public Comment get(int id) {
+        return repository.findById(id).orElseThrow(() -> new CommentNotFoundByIdException(id));
+    }
+
+    public Comment update(int id, Comment comment) {
+        //TODO: migrate to custom exception
         if (comment == null) {
             return null;
         }
 
-        return new CommentDTO(comment.getAuthor(), comment.getContent());
+        Comment updated = get(id);
+
+        updated.setAuthor(comment.getAuthor());
+        updated.setContent(comment.getContent());
+
+        return repository.save(updated);
+    }
+
+    public Comment delete(int id) {
+        Comment deleted = get(id);
+
+        repository.delete(deleted);
+        return deleted;
     }
 }

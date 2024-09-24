@@ -1,28 +1,23 @@
 package ua.edu.chnu.comments;
 
+import io.restassured.RestAssured;
 import jakarta.annotation.PostConstruct;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
-import ua.edu.chnu.comments.dtos.CommentDTO;
+import ua.edu.chnu.comments.models.Comment;
 import ua.edu.chnu.comments.services.CommentService;
 
 import java.util.ArrayList;
 
-import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-
 @Import(TestcontainersConfiguration.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CommentsApplicationTests {
-    private static final CommentDTO TEST_COMMENT = new CommentDTO("test", "test"),
-            UPDATED_COMMENT = new CommentDTO("updated", "updated");
-
     @LocalServerPort
     private int port;
 
@@ -38,17 +33,19 @@ class CommentsApplicationTests {
 
     @Test
     void testGetAll() {
-        var comments = new ArrayList<CommentDTO>();
-        comments.add(TEST_COMMENT);
+        var comments = new ArrayList<Comment>();
 
-        when(service.getAll()).thenReturn(comments);
+        Comment comment = createComment("test", "test");
+        comments.add(comment);
 
-        get(url)
+        Mockito.when(service.getAll()).thenReturn(comments);
+
+        RestAssured.get(url)
                 .then()
-                .body(notNullValue())
-                .body("size()", is(comments.size()))
-                .body("[0].author", equalTo(TEST_COMMENT.getAuthor()))
-                .body("[0].content", equalTo(TEST_COMMENT.getContent()))
+                .body(Matchers.notNullValue())
+                .body("size()", Matchers.is(comments.size()))
+                .body("[0].author", Matchers.equalTo(comment.getAuthor()))
+                .body("[0].content", Matchers.equalTo(comment.getContent()))
                 .statusCode(HttpStatus.OK.value())
                 .log()
                 .all();
@@ -56,13 +53,15 @@ class CommentsApplicationTests {
 
     @Test
     void testGet() {
-        when(service.get(1)).thenReturn(TEST_COMMENT);
+        Comment comment = createComment("test", "test");
 
-        get(url + "/1")
+        Mockito.when(service.get(1)).thenReturn(comment);
+
+        RestAssured.get(url + "/1")
                 .then()
-                .body(notNullValue())
-                .body("author", equalTo(TEST_COMMENT.getAuthor()))
-                .body("content", equalTo(TEST_COMMENT.getContent()))
+                .body(Matchers.notNullValue())
+                .body("author", Matchers.equalTo(comment.getAuthor()))
+                .body("content", Matchers.equalTo(comment.getContent()))
                 .statusCode(HttpStatus.OK.value())
                 .log()
                 .all();
@@ -70,14 +69,18 @@ class CommentsApplicationTests {
 
     @Test
     void testCreate() {
-        when(service.create(TEST_COMMENT)).thenReturn(TEST_COMMENT);
+        Comment comment = createComment("test", "test");
 
-        given()
+        Mockito.when(service.create(comment)).thenReturn(comment);
+
+        RestAssured.given()
                 .contentType("application/json")
-                .body(TEST_COMMENT)
+                .body(comment)
                 .post(url)
                 .then()
-                .body(notNullValue())
+                .body(Matchers.notNullValue())
+                .body("author", Matchers.equalTo(comment.getAuthor()))
+                .body("content", Matchers.equalTo(comment.getContent()))
                 .statusCode(HttpStatus.CREATED.value())
                 .log()
                 .all();
@@ -85,26 +88,44 @@ class CommentsApplicationTests {
 
     @Test
     void testUpdate() {
-        doNothing().when(service).update(1, UPDATED_COMMENT);
+        Comment comment = createComment("updated", "updated");
 
-        given()
+        Mockito.when(service.update(1, comment)).thenReturn(comment);
+
+        RestAssured.given()
                 .contentType("application/json")
-                .body(UPDATED_COMMENT)
+                .body(comment)
                 .put(url + "/1")
                 .then()
-                .statusCode(HttpStatus.NO_CONTENT.value())
+                .body(Matchers.notNullValue())
+                .body("author", Matchers.equalTo(comment.getAuthor()))
+                .body("content", Matchers.equalTo(comment.getContent()))
+                .statusCode(HttpStatus.OK.value())
                 .log()
                 .all();
     }
 
     @Test
     void testDelete() {
-        doNothing().when(service).delete(1);
+        Comment comment = createComment("test", "test");
 
-        delete(url + "/1")
+        Mockito.when(service.delete(1)).thenReturn(comment);
+
+        RestAssured.delete(url + "/1")
                 .then()
-                .statusCode(HttpStatus.NO_CONTENT.value())
+                .body(Matchers.notNullValue())
+                .body("author", Matchers.equalTo(comment.getAuthor()))
+                .body("content", Matchers.equalTo(comment.getContent()))
+                .statusCode(HttpStatus.OK.value())
                 .log()
                 .all();
+    }
+
+    private static Comment createComment(String author, String content) {
+        Comment comment = new Comment();
+        comment.setAuthor(author);
+        comment.setContent(content);
+
+        return comment;
     }
 }

@@ -13,9 +13,9 @@ import java.util.Map;
 public class CommentExceptionHandler {
     @ExceptionHandler(CommentNotFoundByIdException.class)
     public ResponseEntity<Map<String, String>> handleCommentNotFoundByIdException(CommentNotFoundByIdException exception) {
-        var errorResponse = new HashMap<String, String>();
-        errorResponse.put("error", exception.getMessage());
-        
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        var errors = new HashMap<String, String>();
+        errors.put("error", exception.getMessage());
+
+        return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
     }
 }
