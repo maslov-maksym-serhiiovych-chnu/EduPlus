@@ -19,11 +19,11 @@ public class CourseController {
 
     @GetMapping
     public ResponseEntity<List<CourseDTO>> getAll() {
-        var courseDTOS = service.getAll()
+        var courseDTOs = service.getAll()
                 .stream()
                 .map(CourseController::toDTO)
                 .toList();
-        return ResponseEntity.ok(courseDTOS);
+        return ResponseEntity.ok(courseDTOs);
     }
 
     @GetMapping("{id}")
