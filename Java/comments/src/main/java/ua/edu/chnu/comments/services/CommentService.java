@@ -14,11 +14,6 @@ public class CommentService {
     private final CommentRepository repository;
 
     public Comment create(Comment created) {
-        //TODO: migrate to custom exception
-        if (created == null) {
-            return null;
-        }
-
         return repository.save(created);
     }
 
@@ -31,11 +26,6 @@ public class CommentService {
     }
 
     public Comment update(int id, Comment comment) {
-        //TODO: migrate to custom exception
-        if (comment == null) {
-            return null;
-        }
-
         Comment updated = get(id);
 
         updated.setAuthor(comment.getAuthor());
