@@ -38,7 +38,7 @@ class CommentsApplicationTests {
         Comment comment = createComment("test", "test");
         comments.add(comment);
 
-        Mockito.when(service.getAll()).thenReturn(comments);
+        Mockito.when(service.readAll()).thenReturn(comments);
 
         RestAssured.get(url)
                 .then()
@@ -55,7 +55,7 @@ class CommentsApplicationTests {
     void testGet() {
         Comment comment = createComment("test", "test");
 
-        Mockito.when(service.get(1)).thenReturn(comment);
+        Mockito.when(service.read(1)).thenReturn(comment);
 
         RestAssured.get(url + "/1")
                 .then()
@@ -90,33 +90,25 @@ class CommentsApplicationTests {
     void testUpdate() {
         Comment comment = createComment("updated", "updated");
 
-        Mockito.when(service.update(1, comment)).thenReturn(comment);
+        Mockito.doNothing().when(service).update(1, comment);
 
         RestAssured.given()
                 .contentType("application/json")
                 .body(comment)
                 .put(url + "/1")
                 .then()
-                .body(Matchers.notNullValue())
-                .body("author", Matchers.equalTo(comment.getAuthor()))
-                .body("content", Matchers.equalTo(comment.getContent()))
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.NO_CONTENT.value())
                 .log()
                 .all();
     }
 
     @Test
     void testDelete() {
-        Comment comment = createComment("test", "test");
-
-        Mockito.when(service.delete(1)).thenReturn(comment);
+        Mockito.doNothing().when(service).delete(1);
 
         RestAssured.delete(url + "/1")
                 .then()
-                .body(Matchers.notNullValue())
-                .body("author", Matchers.equalTo(comment.getAuthor()))
-                .body("content", Matchers.equalTo(comment.getContent()))
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.NO_CONTENT.value())
                 .log()
                 .all();
     }

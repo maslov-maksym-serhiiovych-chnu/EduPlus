@@ -18,8 +18,8 @@ public class CourseController {
     private final CourseService service;
 
     @GetMapping
-    public ResponseEntity<List<CourseDTO>> getAll() {
-        var courseDTOs = service.getAll()
+    public ResponseEntity<List<CourseDTO>> readAll() {
+        var courseDTOs = service.readAll()
                 .stream()
                 .map(CourseController::toDTO)
                 .toList();
@@ -27,8 +27,8 @@ public class CourseController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<CourseDTO> get(@PathVariable int id) {
-        Course course = service.get(id);
+    public ResponseEntity<CourseDTO> read(@PathVariable int id) {
+        Course course = service.read(id);
 
         CourseDTO courseDTO = toDTO(course);
         return ResponseEntity.ok(courseDTO);
@@ -48,18 +48,16 @@ public class CourseController {
     public ResponseEntity<CourseDTO> update(@PathVariable int id, @RequestBody CourseDTO courseDTO) {
         Course course = toModel(courseDTO);
 
-        Course updated = service.update(id, course);
+        service.update(id, course);
 
-        CourseDTO updatedDTO = toDTO(updated);
-        return ResponseEntity.ok(updatedDTO);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<CourseDTO> delete(@PathVariable int id) {
-        Course deleted = service.delete(id);
+        service.delete(id);
 
-        CourseDTO deletedDTO = toDTO(deleted);
-        return ResponseEntity.ok(deletedDTO);
+        return ResponseEntity.noContent().build();
     }
 
     public static Course toModel(CourseDTO courseDTO) {

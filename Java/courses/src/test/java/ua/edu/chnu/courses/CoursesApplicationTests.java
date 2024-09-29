@@ -38,7 +38,7 @@ class CoursesApplicationTests {
         Course course = createCourse("test", "test");
         courses.add(course);
 
-        Mockito.when(service.getAll()).thenReturn(courses);
+        Mockito.when(service.readAll()).thenReturn(courses);
 
         RestAssured.get(url)
                 .then()
@@ -55,7 +55,7 @@ class CoursesApplicationTests {
     void testGet() {
         Course course = createCourse("test", "test");
 
-        Mockito.when(service.get(1)).thenReturn(course);
+        Mockito.when(service.read(1)).thenReturn(course);
 
         RestAssured.get(url + "/1")
                 .then()
@@ -90,33 +90,25 @@ class CoursesApplicationTests {
     void testUpdate() {
         Course course = createCourse("updated", "updated");
 
-        Mockito.when(service.update(1, course)).thenReturn(course);
+        Mockito.doNothing().when(service).update(1, course);
 
         RestAssured.given()
                 .contentType("application/json")
                 .body(course)
                 .put(url + "/1")
                 .then()
-                .body(Matchers.notNullValue())
-                .body("name", Matchers.equalTo(course.getName()))
-                .body("description", Matchers.equalTo(course.getDescription()))
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.NO_CONTENT.value())
                 .log()
                 .all();
     }
 
     @Test
     void testDelete() {
-        Course course = createCourse("test", "test");
-
-        Mockito.when(service.delete(1)).thenReturn(course);
+        Mockito.doNothing().when(service).delete(1);
 
         RestAssured.delete(url + "/1")
                 .then()
-                .body(Matchers.notNullValue())
-                .body("name", Matchers.equalTo(course.getName()))
-                .body("description", Matchers.equalTo(course.getDescription()))
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.NO_CONTENT.value())
                 .log()
                 .all();
     }
