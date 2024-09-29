@@ -18,7 +18,7 @@ public class CommentController {
 
     @GetMapping
     public ResponseEntity<List<CommentDTO>> getAll() {
-        var commentDTOs = service.getAll()
+        var commentDTOs = service.readAll()
                 .stream()
                 .map(CommentController::toDTO)
                 .toList();
@@ -27,7 +27,7 @@ public class CommentController {
 
     @GetMapping("{id}")
     public ResponseEntity<CommentDTO> get(@PathVariable int id) {
-        Comment comment = service.get(id);
+        Comment comment = service.read(id);
 
         CommentDTO commentDTO = toDTO(comment);
         return ResponseEntity.ok(commentDTO);
@@ -47,18 +47,16 @@ public class CommentController {
     public ResponseEntity<CommentDTO> update(@PathVariable int id, @RequestBody CommentDTO commentDTO) {
         Comment comment = toModel(commentDTO);
 
-        Comment updated = service.update(id, comment);
+        service.update(id, comment);
 
-        CommentDTO updatedDTO = toDTO(updated);
-        return ResponseEntity.ok(updatedDTO);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<CommentDTO> delete(@PathVariable int id) {
-        Comment deleted = service.delete(id);
+        service.delete(id);
 
-        CommentDTO deletedDTO = toDTO(deleted);
-        return ResponseEntity.ok(deletedDTO);
+        return ResponseEntity.noContent().build();
     }
 
     public static Comment toModel(CommentDTO commentDTO) {

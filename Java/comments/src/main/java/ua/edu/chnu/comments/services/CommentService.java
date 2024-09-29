@@ -17,27 +17,24 @@ public class CommentService {
         return repository.save(created);
     }
 
-    public List<Comment> getAll() {
+    public List<Comment> readAll() {
         return repository.findAll();
     }
 
-    public Comment get(int id) {
+    public Comment read(int id) {
         return repository.findById(id).orElseThrow(() -> new CommentNotFoundByIdException(id));
     }
 
-    public Comment update(int id, Comment comment) {
-        Comment updated = get(id);
+    public void update(int id, Comment comment) {
+        Comment updated = read(id);
 
         updated.setAuthor(comment.getAuthor());
         updated.setContent(comment.getContent());
 
-        return repository.save(updated);
+        repository.save(updated);
     }
 
-    public Comment delete(int id) {
-        Comment deleted = get(id);
-
-        repository.delete(deleted);
-        return deleted;
+    public void delete(int id) {
+        repository.delete(read(id));
     }
 }
