@@ -35,10 +35,8 @@ class CommentsApplicationTests {
     @Test
     void testReadAll() {
         var comments = new ArrayList<Comment>();
-
         Comment comment = createComment("test", "test");
         comments.add(comment);
-
         Mockito.when(service.readAll()).thenReturn(comments);
 
         RestAssured.get(url)
@@ -94,7 +92,6 @@ class CommentsApplicationTests {
     @Test
     void testUpdate() {
         Comment comment = createComment("updated", "updated");
-
         Mockito.doNothing().when(service).update(1, comment);
 
         RestAssured.given()
@@ -146,7 +143,6 @@ class CommentsApplicationTests {
         Comment comment = new Comment();
         comment.setAuthor(author);
         comment.setContent(content);
-
         return comment;
     }
 }
