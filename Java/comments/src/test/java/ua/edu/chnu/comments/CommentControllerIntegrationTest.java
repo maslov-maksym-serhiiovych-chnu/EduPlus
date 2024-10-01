@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 @Import(TestcontainersConfiguration.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CommentsApplicationTests {
+class CommentControllerIntegrationTest {
     @LocalServerPort
     private int port;
 
@@ -35,7 +35,7 @@ class CommentsApplicationTests {
     @Test
     void testReadAll() {
         var comments = new ArrayList<Comment>();
-        Comment comment = createComment("test", "test");
+        Comment comment = new Comment("test", "test");
         comments.add(comment);
         Mockito.when(service.readAll()).thenReturn(comments);
 
@@ -50,7 +50,7 @@ class CommentsApplicationTests {
 
     @Test
     void testRead() {
-        Comment comment = createComment("test", "test");
+        Comment comment = new Comment("test", "test");
         Mockito.when(service.read(1)).thenReturn(comment);
 
         RestAssured.get(url + "/1")
@@ -75,7 +75,7 @@ class CommentsApplicationTests {
 
     @Test
     void testCreate() {
-        Comment comment = createComment("test", "test");
+        Comment comment = new Comment("test", "test");
         Mockito.when(service.create(comment)).thenReturn(comment);
 
         RestAssured.given()
@@ -91,7 +91,7 @@ class CommentsApplicationTests {
 
     @Test
     void testUpdate() {
-        Comment comment = createComment("updated", "updated");
+        Comment comment = new Comment("updated", "updated");
         Mockito.doNothing().when(service).update(1, comment);
 
         RestAssured.given()
@@ -105,7 +105,7 @@ class CommentsApplicationTests {
     @Test
     void testUpdateNotFound() {
         int id = Integer.MAX_VALUE;
-        Comment comment = createComment("updated", "updated");
+        Comment comment = new Comment("updated", "updated");
         Mockito.doThrow(new CommentNotFoundByIdException(id)).when(service).update(id, comment);
 
         RestAssured.given()
@@ -137,12 +137,5 @@ class CommentsApplicationTests {
                 .body(Matchers.notNullValue())
                 .body(Matchers.equalTo("comment not found by id: " + id))
                 .statusCode(HttpStatus.NOT_FOUND.value());
-    }
-
-    private static Comment createComment(String author, String content) {
-        Comment comment = new Comment();
-        comment.setAuthor(author);
-        comment.setContent(content);
-        return comment;
     }
 }
