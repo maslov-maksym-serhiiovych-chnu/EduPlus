@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ua.edu.chnu.comments.dtos.CommentDTO;
 import ua.edu.chnu.comments.models.Comment;
 import ua.edu.chnu.comments.services.CommentService;
 
@@ -17,69 +16,34 @@ public class CommentController {
     private final CommentService service;
 
     @GetMapping
-    public ResponseEntity<List<CommentDTO>> getAll() {
-        var commentDTOs = service.readAll()
-                .stream()
-                .map(CommentController::toDTO)
-                .toList();
-        return ResponseEntity.ok(commentDTOs);
+    public ResponseEntity<List<Comment>> readAll() {
+        var comments = service.readAll();
+        return ResponseEntity.ok(comments);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<CommentDTO> get(@PathVariable int id) {
+    public ResponseEntity<Comment> read(@PathVariable int id) {
         Comment comment = service.read(id);
-
-        CommentDTO commentDTO = toDTO(comment);
-        return ResponseEntity.ok(commentDTO);
+        return ResponseEntity.ok(comment);
     }
 
     @PostMapping
-    public ResponseEntity<CommentDTO> create(@RequestBody CommentDTO commentDTO) {
-        Comment comment = toModel(commentDTO);
-
+    public ResponseEntity<Comment> create(@RequestBody Comment comment) {
         Comment created = service.create(comment);
-
-        CommentDTO createdDTO = toDTO(created);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<CommentDTO> update(@PathVariable int id, @RequestBody CommentDTO commentDTO) {
-        Comment comment = toModel(commentDTO);
-
+    public ResponseEntity<Comment> update(@PathVariable int id, @RequestBody Comment comment) {
         service.update(id, comment);
 
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<CommentDTO> delete(@PathVariable int id) {
+    public ResponseEntity<Comment> delete(@PathVariable int id) {
         service.delete(id);
 
         return ResponseEntity.noContent().build();
-    }
-
-    public static Comment toModel(CommentDTO commentDTO) {
-        if (commentDTO == null) {
-            return null;
-        }
-
-        Comment comment = new Comment();
-        comment.setAuthor(commentDTO.getAuthor());
-        comment.setContent(commentDTO.getContent());
-
-        return comment;
-    }
-
-    public static CommentDTO toDTO(Comment comment) {
-        if (comment == null) {
-            return null;
-        }
-
-        CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setAuthor(comment.getAuthor());
-        commentDTO.setContent(comment.getContent());
-
-        return commentDTO;
     }
 }
