@@ -2,11 +2,9 @@ package ua.edu.chnu.comments_api_java.comments;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
