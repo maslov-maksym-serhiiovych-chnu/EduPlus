@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
+import ua.edu.chnu.comments.exceptions.CommentNotFoundByIdException;
 import ua.edu.chnu.comments.models.Comment;
 import ua.edu.chnu.comments.services.CommentService;
 
@@ -32,7 +33,7 @@ class CommentsApplicationTests {
     }
 
     @Test
-    void testGetAll() {
+    void testReadAll() {
         var comments = new ArrayList<Comment>();
 
         Comment comment = createComment("test", "test");
@@ -46,15 +47,12 @@ class CommentsApplicationTests {
                 .body("size()", Matchers.is(comments.size()))
                 .body("[0].author", Matchers.equalTo(comment.getAuthor()))
                 .body("[0].content", Matchers.equalTo(comment.getContent()))
-                .statusCode(HttpStatus.OK.value())
-                .log()
-                .all();
+                .statusCode(HttpStatus.OK.value());
     }
 
     @Test
-    void testGet() {
+    void testRead() {
         Comment comment = createComment("test", "test");
-
         Mockito.when(service.read(1)).thenReturn(comment);
 
         RestAssured.get(url + "/1")
@@ -62,15 +60,24 @@ class CommentsApplicationTests {
                 .body(Matchers.notNullValue())
                 .body("author", Matchers.equalTo(comment.getAuthor()))
                 .body("content", Matchers.equalTo(comment.getContent()))
-                .statusCode(HttpStatus.OK.value())
-                .log()
-                .all();
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    void testReadNotFound() {
+        int id = Integer.MAX_VALUE;
+        Mockito.when(service.read(id)).thenThrow(new CommentNotFoundByIdException(id));
+
+        RestAssured.get(url + "/" + id)
+                .then()
+                .body(Matchers.notNullValue())
+                .body(Matchers.equalTo("comment not found by id: " + id))
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
     void testCreate() {
         Comment comment = createComment("test", "test");
-
         Mockito.when(service.create(comment)).thenReturn(comment);
 
         RestAssured.given()
@@ -81,9 +88,7 @@ class CommentsApplicationTests {
                 .body(Matchers.notNullValue())
                 .body("author", Matchers.equalTo(comment.getAuthor()))
                 .body("content", Matchers.equalTo(comment.getContent()))
-                .statusCode(HttpStatus.CREATED.value())
-                .log()
-                .all();
+                .statusCode(HttpStatus.CREATED.value());
     }
 
     @Test
@@ -97,9 +102,23 @@ class CommentsApplicationTests {
                 .body(comment)
                 .put(url + "/1")
                 .then()
-                .statusCode(HttpStatus.NO_CONTENT.value())
-                .log()
-                .all();
+                .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    void testUpdateNotFound() {
+        int id = Integer.MAX_VALUE;
+        Comment comment = createComment("updated", "updated");
+        Mockito.doThrow(new CommentNotFoundByIdException(id)).when(service).update(id, comment);
+
+        RestAssured.given()
+                .contentType("application/json")
+                .body(comment)
+                .put(url + "/" + id)
+                .then()
+                .body(Matchers.notNullValue())
+                .body(Matchers.equalTo("comment not found by id: " + id))
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -108,9 +127,19 @@ class CommentsApplicationTests {
 
         RestAssured.delete(url + "/1")
                 .then()
-                .statusCode(HttpStatus.NO_CONTENT.value())
-                .log()
-                .all();
+                .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    void testDeleteNotFound() {
+        int id = Integer.MAX_VALUE;
+        Mockito.doThrow(new CommentNotFoundByIdException(id)).when(service).delete(id);
+
+        RestAssured.delete(url + "/" + id)
+                .then()
+                .body(Matchers.notNullValue())
+                .body(Matchers.equalTo("comment not found by id: " + id))
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     private static Comment createComment(String author, String content) {
