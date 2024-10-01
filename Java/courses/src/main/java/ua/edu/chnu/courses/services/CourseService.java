@@ -17,27 +17,24 @@ public class CourseService {
         return repository.save(created);
     }
 
-    public List<Course> getAll() {
+    public List<Course> readAll() {
         return repository.findAll();
     }
 
-    public Course get(int id) {
+    public Course read(int id) {
         return repository.findById(id).orElseThrow(() -> new CourseNotFoundByIdException(id));
     }
 
-    public Course update(int id, Course course) {
-        Course updated = get(id);
+    public void update(int id, Course course) {
+        Course updated = read(id);
 
         updated.setName(course.getName());
         updated.setDescription(course.getDescription());
 
-        return repository.save(updated);
+        repository.save(updated);
     }
 
-    public Course delete(int id) {
-        Course deleted = get(id);
-
-        repository.delete(deleted);
-        return deleted;
+    public void delete(int id) {
+        repository.delete(read(id));
     }
 }
