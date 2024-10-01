@@ -1,22 +1,25 @@
 package ua.edu.chnu.comments.models;
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+@EqualsAndHashCode
 @Entity
 @Table(name = "comments")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "author", nullable = false)
+    @Getter
+    @Setter
+    @Column(nullable = false)
     private String author;
 
-    @Column(name = "content", nullable = false, length = Integer.MAX_VALUE)
+    @Getter
+    @Setter
+    @Column(nullable = false)
     private String content;
 }
