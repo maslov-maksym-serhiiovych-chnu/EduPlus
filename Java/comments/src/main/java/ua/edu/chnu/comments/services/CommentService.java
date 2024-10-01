@@ -13,8 +13,8 @@ import java.util.List;
 public class CommentService {
     private final CommentRepository repository;
 
-    public Comment create(Comment created) {
-        return repository.save(created);
+    public Comment create(Comment comment) {
+        return repository.save(comment);
     }
 
     public List<Comment> readAll() {
