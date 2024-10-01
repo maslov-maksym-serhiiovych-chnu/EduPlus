@@ -16,15 +16,10 @@ import java.util.List;
 import java.util.Optional;
 
 class CommentServiceTest {
-    private static final Comment TEST_COMMENT = Comment.builder()
-            .author("test")
-            .content("test")
-            .build();
+    private static final int TEST_ID = 1;
 
-    private static final Comment UPDATED_COMMENT = Comment.builder()
-            .author("updated")
-            .content("updated")
-            .build();
+    private static final Comment TEST_COMMENT = new Comment(TEST_ID, "test", "test"),
+            UPDATED_COMMENT = new Comment(TEST_ID, "updated", "updated");
 
     @Mock
     private CommentRepository repository;
@@ -39,7 +34,7 @@ class CommentServiceTest {
 
     @Test
     void testCreate() {
-        Mockito.when(repository.save(TEST_COMMENT)).thenReturn(TEST_COMMENT);
+        Mockito.when(repository.save(Mockito.any())).thenReturn(TEST_COMMENT);
 
         Comment created = service.create(TEST_COMMENT);
         Assertions.assertEquals(TEST_COMMENT, created);
@@ -56,49 +51,49 @@ class CommentServiceTest {
 
     @Test
     void testRead() {
-        Mockito.when(repository.findById(1)).thenReturn(Optional.of(TEST_COMMENT));
+        Mockito.when(repository.findById(TEST_ID)).thenReturn(Optional.of(TEST_COMMENT));
 
-        Comment read = service.read(1);
+        Comment read = service.read(TEST_ID);
         Assertions.assertEquals(TEST_COMMENT, read);
     }
 
     @Test
     void testReadNotFound() {
-        Mockito.when(repository.findById(1)).thenReturn(Optional.empty());
+        Mockito.when(repository.findById(TEST_ID)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(CommentNotFoundException.class, () -> service.read(1));
+        Assertions.assertThrows(CommentNotFoundException.class, () -> service.read(TEST_ID));
     }
 
     @Test
     void testUpdate() {
-        Mockito.when(repository.findById(1)).thenReturn(Optional.of(TEST_COMMENT));
-        Mockito.when(repository.save(TEST_COMMENT)).thenReturn(TEST_COMMENT);
+        Mockito.when(repository.findById(TEST_ID)).thenReturn(Optional.of(TEST_COMMENT));
+        Mockito.when(repository.save(Mockito.any())).thenReturn(TEST_COMMENT);
 
-        service.update(1, UPDATED_COMMENT);
+        service.update(TEST_ID, UPDATED_COMMENT);
         Assertions.assertEquals(UPDATED_COMMENT, TEST_COMMENT);
     }
 
     @Test
     void testUpdateNotFound() {
-        Mockito.when(repository.findById(1)).thenReturn(Optional.empty());
+        Mockito.when(repository.findById(TEST_ID)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(CommentNotFoundException.class, () -> service.update(1, UPDATED_COMMENT));
-        Mockito.verify(repository, Mockito.times(0)).save(UPDATED_COMMENT);
+        Assertions.assertThrows(CommentNotFoundException.class, () -> service.update(TEST_ID, UPDATED_COMMENT));
+        Mockito.verify(repository, Mockito.times(0)).save(Mockito.any());
     }
 
     @Test
     void testDelete() {
-        Mockito.when(repository.findById(1)).thenReturn(Optional.of(TEST_COMMENT));
+        Mockito.when(repository.findById(TEST_ID)).thenReturn(Optional.of(TEST_COMMENT));
 
-        service.delete(1);
+        service.delete(TEST_ID);
         Mockito.verify(repository, Mockito.times(1)).delete(TEST_COMMENT);
     }
 
     @Test
     void testDeleteNotFound() {
-        Mockito.when(repository.findById(1)).thenReturn(Optional.empty());
+        Mockito.when(repository.findById(TEST_ID)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(CommentNotFoundException.class, () -> service.delete(1));
+        Assertions.assertThrows(CommentNotFoundException.class, () -> service.delete(TEST_ID));
         Mockito.verify(repository, Mockito.times(0)).delete(Mockito.any());
     }
 }
