@@ -27,5 +27,5 @@ public class Course {
     private String description;
 
     @OneToMany(mappedBy = "course")
-    private Set<Comment> comments = new LinkedHashSet<>();
+    private final Set<Comment> comments = new LinkedHashSet<>();
 }
