@@ -3,6 +3,7 @@ plugins {
 	id("org.springframework.boot") version "3.3.3"
 	id("io.spring.dependency-management") version "1.1.6"
 }
+val springCloudVersion by extra("2023.0.3")
 
 group = "ua.edu.chnu"
 version = "0.0.1-SNAPSHOT"
@@ -28,6 +29,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.flywaydb:flyway-core")
 	implementation("org.flywaydb:flyway-database-postgresql")
+	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
@@ -37,6 +39,11 @@ dependencies {
 	testImplementation("org.testcontainers:postgresql")
 	testImplementation("io.rest-assured:rest-assured:5.5.0")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+dependencyManagement {
+	imports {
+		mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
+	}
 }
 
 tasks.withType<Test> {
