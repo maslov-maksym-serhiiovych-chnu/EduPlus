@@ -116,6 +116,7 @@ class CommentControllerIntegrationTest {
                 .put(url + "/" + TEST_ID)
                 .then()
                 .body(Matchers.notNullValue())
+                .body(Matchers.equalTo(TEST_EXCEPTION.getMessage()))
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
