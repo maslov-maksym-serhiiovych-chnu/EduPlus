@@ -24,7 +24,7 @@
       POSTGRES_PASSWORD: comments-api-db-csharp
     volumes:
       - comments-api-data-csharp:/var/lib/postgresql/data
-      - ./C#/Comments/DAL/Data/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./comments_api_csharp/DAL/Data/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - comments-api-network-csharp
     ports:
