@@ -1,81 +1,81 @@
 ﻿services:
-  comments-db-java:
+  comments-api-db-java:
     image: postgres
-    container_name: comments-db-java
+    container_name: comments-api-db-java
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_USER: comments-db-java
-      POSTGRES_PASSWORD: comments-db-java
+      POSTGRES_USER: comments-api-db-java
+      POSTGRES_PASSWORD: comments-api-db-java
     volumes:
-      - comments-data-java:/var/lib/postgresql/data
+      - comments-api-data-java:/var/lib/postgresql/data
     networks:
-      - comments-network-java
+      - comments-api-network-java
     ports:
       - "5432:5432"
 
-  comments-db-csharp:
+  comments-api-db-csharp:
     image: postgres
-    container_name: comments-db-csharp
+    container_name: comments-api-db-csharp
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_USER: comments-db-csharp
-      POSTGRES_PASSWORD: comments-db-csharp
+      POSTGRES_USER: comments-api-db-csharp
+      POSTGRES_PASSWORD: comments-api-db-csharp
     volumes:
-      - comments-data-csharp:/var/lib/postgresql/data
+      - comments-api-data-csharp:/var/lib/postgresql/data
       - ./C#/Comments/DAL/Data/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      - comments-network-csharp
+      - comments-api-network-csharp
     ports:
       - "5433:5432"
 
-  courses-db-java:
+  courses-api-db-java:
     image: postgres
-    container_name: courses-db-java
+    container_name: courses-api-db-java
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_USER: courses-db-java
-      POSTGRES_PASSWORD: courses-db-java
+      POSTGRES_USER: courses-api-db-java
+      POSTGRES_PASSWORD: courses-api-db-java
     volumes:
-      - courses-data-java:/var/lib/postgresql/data
+      - courses-api-data-java:/var/lib/postgresql/data
     networks:
-      - courses-network-java
+      - courses-api-network-java
     ports:
       - "5434:5432"
   
-  courses-db-csharp:
+  courses-api-db-csharp:
     image: postgres
-    container_name: courses-db-csharp
+    container_name: courses-api-db-csharp
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_USER: courses-db-csharp
-      POSTGRES_PASSWORD: courses-db-csharp
+      POSTGRES_USER: courses-api-db-csharp
+      POSTGRES_PASSWORD: courses-api-db-csharp
     volumes:
-      - courses-data-csharp:/var/lib/postgresql/data
+      - courses-api-data-csharp:/var/lib/postgresql/data
     networks:
-      - courses-network-csharp
+      - courses-api-network-csharp
     ports:
       - "5435:5432"
 
 volumes:
-  comments-data-java:
-    name: comments-data-java
-  comments-data-csharp:
-    name: comments-data-csharp
-  courses-data-java:
-    name: courses-data-java
-  courses-data-csharp:
-    name: courses-data-csharp
+  comments-api-data-java:
+    name: comments-api-data-java
+  comments-api-data-csharp:
+    name: comments-api-data-csharp
+  courses-api-data-java:
+    name: courses-api-data-java
+  courses-api-data-csharp:
+    name: courses-api-data-csharp
 
 networks:
-  comments-network-java:
-    name: comments-network-java
-  comments-network-csharp:
-    name: comments-network-csharp
-  courses-network-java:
-    name: courses-network-java
-  courses-network-csharp:
-    name: courses-network-csharp
+  comments-api-network-java:
+    name: comments-api-network-java
+  comments-api-network-csharp:
+    name: comments-api-network-csharp
+  courses-api-network-java:
+    name: courses-api-network-java
+  courses-api-network-csharp:
+    name: courses-api-network-csharp
