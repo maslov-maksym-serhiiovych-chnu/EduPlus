@@ -1,23 +1,23 @@
 ﻿services:
-  Comments-db:
+  Courses-db:
     image: postgres:16
-    container_name: Comments-db
+    container_name: Courses-db
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_USER: Comments-db
-      POSTGRES_PASSWORD: Comments-db
+      POSTGRES_USER: Courses-db
+      POSTGRES_PASSWORD: Courses-db
     volumes:
-      - Comments-data:/var/lib/postgresql/data
+      - Courses-data:/var/lib/postgresql/data
     networks:
-      - Comments-network
+      - Courses-network
     ports:
       - "5432:5432"
 
 volumes:
-  Comments-data:
-    name: Comments-data
+  Courses-data:
+    name: Courses-data
 
 networks:
-  Comments-network:
-    name: Comments-network
+  Courses-network:
+    name: Courses-network
