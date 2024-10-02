@@ -1,1 +1,23 @@
-﻿
+﻿services:
+  Comments-db:
+    image: postgres:16
+    container_name: Comments-db
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: Comments-db
+      POSTGRES_PASSWORD: Comments-db
+    volumes:
+      - Comments-data:/var/lib/postgresql/data
+    networks:
+      - Comments-network
+    ports:
+      - "5432:5432"
+
+volumes:
+  Comments-data:
+    name: Comments-data
+
+networks:
+  Comments-network:
+    name: Comments-network
