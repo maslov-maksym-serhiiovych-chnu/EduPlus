@@ -4,7 +4,7 @@ using Npgsql;
 
 namespace DAL.Data;
 
-public class CommentRepository(NpgsqlDataSource dataSource)
+public class CommentRepository(NpgsqlDataSource dataSource) : ICommentRepository
 {
     public async Task<int> CreateAsync(Comment comment)
     {
