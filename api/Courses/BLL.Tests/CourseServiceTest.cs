@@ -54,9 +54,7 @@ public class CourseServiceTest
     [Fact]
     public async Task TestReadAsyncNotFound()
     {
-        int id = It.IsAny<int>();
-        Course course = It.IsAny<Course>();
-        _mockRepository.Setup(repository => repository.ReadAsync(id)).ReturnsAsync(course);
+        _mockRepository.Setup(repository => repository.ReadAsync(TestId)).ReturnsAsync((Course?)null);
 
         await Assert.ThrowsAsync<CourseNotFoundException>(async () => await _service.ReadAsync(TestId));
     }
@@ -73,11 +71,9 @@ public class CourseServiceTest
     [Fact]
     public async Task TestUpdateAsyncNotFound()
     {
-        int id = It.IsAny<int>();
-        Course course = It.IsAny<Course>();
-        _mockRepository.Setup(repository => repository.ReadAsync(id)).ReturnsAsync(course);
+        _mockRepository.Setup(repository => repository.ReadAsync(TestId)).ReturnsAsync((Course?)null);
 
-        await Assert.ThrowsAsync<CourseNotFoundException>(async () => await _service.UpdateAsync(id, course));
+        await Assert.ThrowsAsync<CourseNotFoundException>(async () => await _service.UpdateAsync(TestId, UpdatedCourse));
     }
 
     [Fact]
@@ -92,10 +88,8 @@ public class CourseServiceTest
     [Fact]
     public async Task TestDeleteAsyncNotFound()
     {
-        int id = It.IsAny<int>();
-        Course course = It.IsAny<Course>();
-        _mockRepository.Setup(repository => repository.ReadAsync(id)).ReturnsAsync(course);
+        _mockRepository.Setup(repository => repository.ReadAsync(TestId)).ReturnsAsync((Course?)null);
 
-        await Assert.ThrowsAsync<CourseNotFoundException>(async () => await _service.DeleteAsync(id));
+        await Assert.ThrowsAsync<CourseNotFoundException>(async () => await _service.DeleteAsync(TestId));
     }
 }
