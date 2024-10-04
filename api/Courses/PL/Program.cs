@@ -1,6 +1,7 @@
 using BLL.Services;
 using DAL.Data;
 using Microsoft.EntityFrameworkCore;
+using PL.Middlewares;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -19,5 +20,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.MapControllers();
 app.Run();
+
+public partial class Program;
