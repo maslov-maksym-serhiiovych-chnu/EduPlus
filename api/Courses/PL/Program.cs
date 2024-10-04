@@ -1,3 +1,4 @@
+using BLL.Services;
 using DAL.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +9,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CoursesDbContext>(options => options.UseNpgsql(
     builder.Configuration.GetConnectionString("DefaultConnection")
 ));
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<ICourseService, CourseService>();
 
 WebApplication app = builder.Build();
 if (app.Environment.IsDevelopment())
