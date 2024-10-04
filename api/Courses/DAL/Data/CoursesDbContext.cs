@@ -15,7 +15,7 @@ public class CoursesDbContext(DbContextOptions<CoursesDbContext> options) : DbCo
 
         modelBuilder.Entity<Course>()
             .Property(c => c.Id)
-            .ValueGeneratedOnAdd();
+            .UseIdentityByDefaultColumn();
 
         modelBuilder.Entity<Course>()
             .Property(c => c.Name)
