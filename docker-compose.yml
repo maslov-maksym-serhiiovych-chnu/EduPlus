@@ -31,15 +31,28 @@
     image: mongo
     container_name: comments-api-db
     restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+    volumes:
+      - comments-api-data:/data/db
+    networks:
+      - comments-api-network
+    ports:
+      - "27017:27017"
 
 volumes:
   Courses-data:
     name: Courses-data
   courses-api-data:
     name: courses-api-data
+  comments-api-data:
+    name: comments-api-data
 
 networks:
   Courses-network:
     name: Courses-network
   courses-api-network:
     name: courses-api-network
+  comments-api-network:
+    name: comments-api-network
