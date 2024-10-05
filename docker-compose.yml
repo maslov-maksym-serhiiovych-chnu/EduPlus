@@ -5,8 +5,7 @@
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_USER: Courses-db
-      POSTGRES_PASSWORD: Courses-db
+      POSTGRES_PASSWORD: postgres
     volumes:
       - Courses-data:/var/lib/postgresql/data
     networks:
@@ -20,14 +19,18 @@
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_USER: courses-api-db
-      POSTGRES_PASSWORD: courses-api-db
+      POSTGRES_PASSWORD: postgres
     volumes:
       - courses-api-data:/var/lib/postgresql/data
     networks:
       - courses-api-network
     ports:
       - "5433:5432"
+  
+  comments-api-db:
+    image: mongo
+    container_name: comments-api-db
+    restart: always
 
 volumes:
   Courses-data:
