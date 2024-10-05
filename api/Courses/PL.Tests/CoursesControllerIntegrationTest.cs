@@ -28,7 +28,7 @@ public class CoursesControllerIntegrationTest : IClassFixture<WebApplicationFact
         Created = new() { Name = "created", Description = "created" },
         Updated = new() { Name = "updated", Description = "updated" };
 
-    private static readonly PostgreSqlContainer Container = new PostgreSqlBuilder().WithImage("postgres:16").Build();
+    private static readonly PostgreSqlContainer Container = new PostgreSqlBuilder().WithImage("postgres").Build();
     private const string Url = "api/Courses";
 
     private HttpClient _client = null!;

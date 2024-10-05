@@ -1,6 +1,6 @@
 ﻿services:
   Courses-db:
-    image: postgres:16
+    image: postgres
     container_name: Courses-db
     restart: always
     shm_size: 128mb
@@ -15,7 +15,7 @@
       - "5432:5432"
   
   courses-db:
-    image: postgres:16
+    image: postgres
     container_name: courses-db
     restart: always
     shm_size: 128mb
