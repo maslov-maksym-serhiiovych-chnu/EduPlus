@@ -13,11 +13,30 @@
       - Courses-network
     ports:
       - "5432:5432"
+  
+  courses-db:
+    image: postgres:16
+    container_name: courses-db
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: courses-db
+      POSTGRES_PASSWORD: courses-db
+    volumes:
+      - courses-data:/var/lib/postgresql/data
+    networks:
+      - courses-network
+    ports:
+      - "5433:5432"
 
 volumes:
   Courses-data:
     name: Courses-data
+  courses-data:
+    name: courses-data
 
 networks:
   Courses-network:
     name: Courses-network
+  courses-network:
+    name: courses-network
