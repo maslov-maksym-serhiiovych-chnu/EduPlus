@@ -13,6 +13,9 @@ namespace PL.Tests;
 
 public class CoursesControllerIntegrationTest : IClassFixture<WebApplicationFactory<Program>>, IAsyncLifetime
 {
+    private const int ReadId = 1, UpdatedId = 2, DeletedId = 3, NotFoundId = int.MaxValue;
+    private static readonly string TestNotFoundMessage = "course not found by id: " + NotFoundId;
+
     private const string TestData = """
                                     INSERT INTO courses (name, description) VALUES ('read', 'read'),
                                                                                    ('should-updated', 'should-updated'),
@@ -20,8 +23,6 @@ public class CoursesControllerIntegrationTest : IClassFixture<WebApplicationFact
                                     """;
 
     private static bool _testDataInitialized;
-    private const int ReadId = 1, UpdatedId = 2, DeletedId = 3, NotFoundId = int.MaxValue;
-    private static readonly string TestNotFoundMessage = "course not found by id: " + NotFoundId;
 
     private static readonly Course Read = new() { Name = "read", Description = "read" },
         Created = new() { Name = "created", Description = "created" },
@@ -29,6 +30,7 @@ public class CoursesControllerIntegrationTest : IClassFixture<WebApplicationFact
 
     private static readonly PostgreSqlContainer Container = new PostgreSqlBuilder().WithImage("postgres:16").Build();
     private const string Url = "api/Courses";
+
     private HttpClient _client = null!;
     private WebApplicationFactory<Program> _factory = null!;
 
@@ -80,8 +82,7 @@ public class CoursesControllerIntegrationTest : IClassFixture<WebApplicationFact
         var courses = JsonConvert.DeserializeObject<Course[]>(content);
         Assert.NotNull(courses);
         Assert.NotEmpty(courses);
-        Assert.Equal(Read.Name, courses[0].Name);
-        Assert.Equal(Read.Description, courses[0].Description);
+        AssertCourse(Read, courses[0]);
     }
 
     [Fact]
@@ -92,9 +93,7 @@ public class CoursesControllerIntegrationTest : IClassFixture<WebApplicationFact
 
         string content = await response.Content.ReadAsStringAsync();
         Course? course = JsonConvert.DeserializeObject<Course>(content);
-        Assert.NotNull(course);
-        Assert.Equal(Read.Name, course.Name);
-        Assert.Equal(Read.Description, course.Description);
+        AssertCourse(Read, course);
     }
 
     [Fact]
@@ -118,9 +117,7 @@ public class CoursesControllerIntegrationTest : IClassFixture<WebApplicationFact
 
         string responseContent = await response.Content.ReadAsStringAsync();
         Course? course = JsonConvert.DeserializeObject<Course>(responseContent);
-        Assert.NotNull(course);
-        Assert.Equal(Created.Name, course.Name);
-        Assert.Equal(Created.Description, course.Description);
+        AssertCourse(Created, course);
     }
 
     [Fact]
@@ -161,5 +158,12 @@ public class CoursesControllerIntegrationTest : IClassFixture<WebApplicationFact
         string responseContent = await response.Content.ReadAsStringAsync();
         string? message = JsonConvert.DeserializeObject<string>(responseContent);
         Assert.Equal(TestNotFoundMessage, message);
+    }
+
+    private static void AssertCourse(Course expected, Course? actual)
+    {
+        Assert.NotNull(actual);
+        Assert.Equal(expected.Name, actual.Name);
+        Assert.Equal(expected.Description, actual.Description);
     }
 }
