@@ -15,8 +15,6 @@ import ua.edu.chnu.courses_api.courses.Course;
 class CourseControllerIntegrationTest {
     private static final int NOT_FOUND_COURSE_ID = Integer.MAX_VALUE;
     private static final String NOT_FOUND_COURSE_MESSAGE = "course not found by id: " + NOT_FOUND_COURSE_ID;
-    private static int readCourseId, shouldUpdatedCourseId, deletedCourseId;
-    private static String deletedCourseNotFoundMessage;
 
     private static final Course READ_COURSE = new Course(0, "read", "read"),
             SHOULD_UPDATED_COURSE = new Course(0, "should-updated", "should-updated"),
@@ -25,6 +23,8 @@ class CourseControllerIntegrationTest {
             UPDATED_COURSE = new Course(0, "updated", "updated");
 
     private static boolean testDataCreated;
+    private static int readCourseId, shouldUpdatedCourseId, deletedCourseId;
+    private static String deletedCourseNotFoundMessage;
 
     @LocalServerPort
     private int port;
@@ -67,7 +67,7 @@ class CourseControllerIntegrationTest {
                 .get("id");
 
         deletedCourseNotFoundMessage = "course not found by id: " + deletedCourseId;
-        
+
         testDataCreated = true;
     }
 
