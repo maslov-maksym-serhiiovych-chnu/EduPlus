@@ -1,7 +1,10 @@
 package ua.edu.chnu.comments_api.comments;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import ua.edu.chnu.comments_api.courses.CourseNotFoundException;
+import ua.edu.chnu.comments_api.courses.CourseClient;
 
 import java.util.List;
 
@@ -9,8 +12,11 @@ import java.util.List;
 @Service
 public class CommentService {
     private final CommentRepository repository;
+    private final CourseClient client;
 
     public Comment create(Comment comment) {
+        validateCourseId(comment.getCourseId());
+        
         return repository.save(comment);
     }
 
@@ -23,14 +29,24 @@ public class CommentService {
     }
 
     public void update(String id, Comment comment) {
+        int courseId = comment.getCourseId();
+        validateCourseId(courseId);
+        
         Comment updated = read(id);
         updated.setContent(comment.getContent());
-        updated.setCourseId(comment.getCourseId());
+        updated.setCourseId(courseId);
         repository.save(updated);
     }
 
     public void delete(String id) {
         Comment comment = read(id);
         repository.delete(comment);
+    }
+    
+    private void validateCourseId(int courseId) {
+        var course = client.read(courseId);
+        if (course.getStatusCode().isSameCodeAs(HttpStatus.NOT_FOUND)) {
+            throw new CourseNotFoundException("course not found by id: " + courseId);
+        }
     }
 }
