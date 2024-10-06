@@ -1,11 +1,13 @@
 package ua.edu.chnu.comments_api.comments;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Document("comments")
 public class Comment {
