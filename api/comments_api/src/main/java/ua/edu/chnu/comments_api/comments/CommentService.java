@@ -18,18 +18,18 @@ public class CommentService {
         return repository.findAll();
     }
 
-    public Comment read(int id) {
+    public Comment read(String id) {
         return repository.findById(id).orElseThrow(() -> new CommentNotFoundException("comment not found by id: " + id));
     }
 
-    public void update(int id, Comment comment) {
+    public void update(String id, Comment comment) {
         Comment updated = read(id);
         updated.setContent(comment.getContent());
         updated.setCourseId(comment.getCourseId());
         repository.save(updated);
     }
 
-    public void delete(int id) {
+    public void delete(String id) {
         Comment comment = read(id);
         repository.delete(comment);
     }
