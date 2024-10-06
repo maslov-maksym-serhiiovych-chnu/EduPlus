@@ -1,7 +1,7 @@
 package ua.edu.chnu.comments_api.comments;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ua.edu.chnu.comments_api.courses.CourseNotFoundException;
 import ua.edu.chnu.comments_api.courses.CourseClient;
@@ -44,8 +44,9 @@ public class CommentService {
     }
     
     private void validateCourseId(int courseId) {
-        var course = client.read(courseId);
-        if (course.getStatusCode().isSameCodeAs(HttpStatus.NOT_FOUND)) {
+        try {
+            client.read(courseId);
+        } catch (FeignException.NotFound exception) {
             throw new CourseNotFoundException("course not found by id: " + courseId);
         }
     }
