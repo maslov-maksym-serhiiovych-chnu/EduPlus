@@ -13,18 +13,18 @@ import ua.edu.chnu.courses_api.courses.Course;
 @Import(TestcontainersConfiguration.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CourseControllerIntegrationTest {
-    private static final int READ_ID = 1, SHOULD_UPDATED_ID = 2, DELETED_ID = 3, NOT_FOUND_ID = Integer.MAX_VALUE;
-    
-    private static final String DELETED_COURSE_NOT_FOUND_MESSAGE = "course not found by id: " + DELETED_ID,
-            NOT_FOUND_MESSAGE = "course not found by id: " + NOT_FOUND_ID;
+    private static final int NOT_FOUND_COURSE_ID = Integer.MAX_VALUE;
+    private static final String NOT_FOUND_COURSE_MESSAGE = "course not found by id: " + NOT_FOUND_COURSE_ID;
+    private static int readCourseId, shouldUpdatedCourseId, deletedCourseId;
+    private static String deletedCourseNotFoundMessage;
 
     private static final Course READ_COURSE = new Course(0, "read", "read"),
             SHOULD_UPDATED_COURSE = new Course(0, "should-updated", "should-updated"),
             DELETED_COURSE = new Course(0, "deleted", "deleted"),
             CREATED_COURSE = new Course(0, "created", "created"),
             UPDATED_COURSE = new Course(0, "updated", "updated");
-    
-    private static boolean testCoursesPosted;
+
+    private static boolean testDataCreated;
 
     @LocalServerPort
     private int port;
@@ -35,26 +35,40 @@ class CourseControllerIntegrationTest {
     void init() {
         url = "http://localhost:" + port + "/api/courses";
 
-        if (testCoursesPosted) {
+        if (testDataCreated) {
             return;
         }
 
-        RestAssured.given()
+        readCourseId = RestAssured.given()
                 .contentType("application/json")
                 .body(READ_COURSE)
-                .post(url);
+                .post(url)
+                .then()
+                .extract()
+                .jsonPath()
+                .get("id");
 
-        RestAssured.given()
+        shouldUpdatedCourseId = RestAssured.given()
                 .contentType("application/json")
                 .body(SHOULD_UPDATED_COURSE)
-                .post(url);
+                .post(url)
+                .then()
+                .extract()
+                .jsonPath()
+                .get("id");
 
-        RestAssured.given()
+        deletedCourseId = RestAssured.given()
                 .contentType("application/json")
                 .body(DELETED_COURSE)
-                .post(url);
+                .post(url)
+                .then()
+                .extract()
+                .jsonPath()
+                .get("id");
 
-        testCoursesPosted = true;
+        deletedCourseNotFoundMessage = "course not found by id: " + deletedCourseId;
+        
+        testDataCreated = true;
     }
 
     @Test
@@ -63,7 +77,7 @@ class CourseControllerIntegrationTest {
                 .then()
                 .body(Matchers.notNullValue())
                 .body("[0]", Matchers.notNullValue())
-                .body("[0].id", Matchers.equalTo(READ_ID))
+                .body("[0].id", Matchers.equalTo(readCourseId))
                 .body("[0].name", Matchers.equalTo(READ_COURSE.getName()))
                 .body("[0].description", Matchers.equalTo(READ_COURSE.getDescription()))
                 .statusCode(HttpStatus.OK.value());
@@ -71,7 +85,7 @@ class CourseControllerIntegrationTest {
 
     @Test
     void testCreate() {
-        String idResponse = RestAssured.given()
+        int id = RestAssured.given()
                 .contentType("application/json")
                 .body(CREATED_COURSE)
                 .post(url)
@@ -82,9 +96,8 @@ class CourseControllerIntegrationTest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
                 .jsonPath()
-                .getString("id");
+                .get("id");
 
-        int id = Integer.parseInt(idResponse);
         RestAssured.get(url + "/" + id)
                 .then()
                 .body(Matchers.notNullValue())
@@ -99,14 +112,14 @@ class CourseControllerIntegrationTest {
         RestAssured.given()
                 .contentType("application/json")
                 .body(UPDATED_COURSE)
-                .put(url + "/" + SHOULD_UPDATED_ID)
+                .put(url + "/" + shouldUpdatedCourseId)
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
-        RestAssured.get(url + "/" + SHOULD_UPDATED_ID)
+        RestAssured.get(url + "/" + shouldUpdatedCourseId)
                 .then()
                 .body(Matchers.notNullValue())
-                .body("id", Matchers.equalTo(SHOULD_UPDATED_ID))
+                .body("id", Matchers.equalTo(shouldUpdatedCourseId))
                 .body("name", Matchers.equalTo(UPDATED_COURSE.getName()))
                 .body("description", Matchers.equalTo(UPDATED_COURSE.getDescription()));
     }
@@ -116,32 +129,32 @@ class CourseControllerIntegrationTest {
         RestAssured.given()
                 .contentType("application/json")
                 .body(UPDATED_COURSE)
-                .put(url + "/" + NOT_FOUND_ID)
+                .put(url + "/" + NOT_FOUND_COURSE_ID)
                 .then()
                 .body(Matchers.notNullValue())
-                .body(Matchers.is(NOT_FOUND_MESSAGE))
+                .body(Matchers.is(NOT_FOUND_COURSE_MESSAGE))
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
     void testDelete() {
-        RestAssured.delete(url + "/" + DELETED_ID)
+        RestAssured.delete(url + "/" + deletedCourseId)
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
-        RestAssured.get(url + "/" + DELETED_ID)
+        RestAssured.get(url + "/" + deletedCourseId)
                 .then()
                 .body(Matchers.notNullValue())
-                .body(Matchers.is(DELETED_COURSE_NOT_FOUND_MESSAGE))
+                .body(Matchers.is(deletedCourseNotFoundMessage))
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
     void testDeleteNotFound() {
-        RestAssured.delete(url + "/" + NOT_FOUND_ID)
+        RestAssured.delete(url + "/" + NOT_FOUND_COURSE_ID)
                 .then()
                 .body(Matchers.notNullValue())
-                .body(Matchers.is(NOT_FOUND_MESSAGE))
+                .body(Matchers.is(NOT_FOUND_COURSE_MESSAGE))
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
 }
