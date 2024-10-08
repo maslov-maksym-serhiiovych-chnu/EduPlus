@@ -25,7 +25,17 @@
     networks:
       - courses-api-network
     ports:
-      - "5433:5432"
+      - "5433:5433"
+  
+  courses-api:
+    build: ./api/courses_api
+    container_name: courses-api
+    networks:
+      - courses-api-network
+    ports:
+      - "8081:8081"
+    depends_on:
+      - courses-api-db
   
   comments-api-db:
     image: mongo
