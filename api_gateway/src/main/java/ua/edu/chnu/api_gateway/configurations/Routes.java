@@ -13,14 +13,14 @@ public class Routes {
     @Bean
     public RouterFunction<ServerResponse> coursesApiRoute() {
         return GatewayRouterFunctions.route("courses-api")
-                .route(RequestPredicates.path("/api/courses"), HandlerFunctions.http("http://localhost:8081"))
+                .route(RequestPredicates.path("/api/courses"), HandlerFunctions.http(System.getenv("COURSES_API_URL")))
                 .build();
     }
 
     @Bean
     public RouterFunction<ServerResponse> commentsApiRoute() {
         return GatewayRouterFunctions.route("comments-api")
-                .route(RequestPredicates.path("/api/comments"), HandlerFunctions.http("http://localhost:8082"))
+                .route(RequestPredicates.path("/api/comments"), HandlerFunctions.http(System.getenv("COMMENTS_API_URL")))
                 .build();
     }
 }
