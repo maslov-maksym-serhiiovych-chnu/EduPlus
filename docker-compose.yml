@@ -86,7 +86,7 @@
       SPRING_DATA_MONGODB_USERNAME: comments-api-db
       SPRING_DATA_MONGODB_PASSWORD: comments-api-db
       SPRING_DATA_MONGODB_AUTHENTICATION-DATABASE: admin
-      COURSES_API_URL: http://courses-api:8082
+      COURSES_API_URL: http://courses-api:8081
       SERVER_PORT: 8082
     networks:
       - eduplus-network
