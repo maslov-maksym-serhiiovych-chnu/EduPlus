@@ -14,6 +14,7 @@ public class Routes {
     public RouterFunction<ServerResponse> coursesApiRoute() {
         return GatewayRouterFunctions.route("courses-api")
                 .route(RequestPredicates.path("/api/courses"), HandlerFunctions.http(System.getenv("COURSES_API_URL")))
+                .route(RequestPredicates.path("/api/courses/{id}"), HandlerFunctions.http(System.getenv("COURSES_API_URL")))
                 .build();
     }
 
@@ -21,6 +22,7 @@ public class Routes {
     public RouterFunction<ServerResponse> commentsApiRoute() {
         return GatewayRouterFunctions.route("comments-api")
                 .route(RequestPredicates.path("/api/comments"), HandlerFunctions.http(System.getenv("COMMENTS_API_URL")))
+                .route(RequestPredicates.path("/api/comments/{id}"), HandlerFunctions.http(System.getenv("COMMENTS_API_URL")))
                 .build();
     }
 }
