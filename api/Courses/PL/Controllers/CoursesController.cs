@@ -6,7 +6,7 @@ namespace PL.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CoursesController(ICourseService service) : ControllerBase
+public class CoursesController(CourseService service) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]

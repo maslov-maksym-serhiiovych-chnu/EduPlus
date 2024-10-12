@@ -5,36 +5,39 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Services;
 
-public class CourseService(ICourseRepository repository) : ICourseService
+public class CourseService(CoursesDbContext context)
 {
     public async Task<int> CreateAsync(Course course)
     {
-        return await repository.CreateAsync(course);
+        await context.Courses.AddAsync(course);
+
+        return await context.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<Course>> ReadAllAsync()
     {
-        var courses = await repository.ReadAllAsync();
+        var courses = await context.Courses.ToArrayAsync();
         return courses;
     }
 
     public async Task<Course> ReadAsync(int id)
     {
-        Course? course = await repository.ReadAsync(id);
+        Course? course = await context.Courses.FindAsync(id);
         return course ?? throw new CourseNotFoundException("course not found by id: " + id);
     }
 
     public async Task UpdateAsync(int id, Course course)
     {
-        await ReadAsync(id);
+        Course updated = await ReadAsync(id);
+        updated.Name = course.Name;
+        updated.Description = course.Description;
 
-        await repository.UpdateAsync(id, course);
+        await context.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(int id)
     {
-        await ReadAsync(id);
-
-        await repository.DeleteAsync(id);
+        Course course = await ReadAsync(id);
+        context.Courses.Remove(course);
     }
 }
