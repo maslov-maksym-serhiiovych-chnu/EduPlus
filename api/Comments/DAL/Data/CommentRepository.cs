@@ -4,7 +4,7 @@ using Microsoft.Data.Sqlite;
 
 namespace DAL.Data;
 
-public class CommentRepository(string connectionString)
+public class CommentRepository(string? connectionString)
 {
     public async Task InitializeAsync()
     {
