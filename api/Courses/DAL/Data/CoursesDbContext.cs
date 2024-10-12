@@ -15,6 +15,7 @@ public class CoursesDbContext(DbContextOptions<CoursesDbContext> options) : DbCo
 
         modelBuilder.Entity<Course>()
             .Property(c => c.Id)
+            .HasColumnName("id")
             .UseIdentityByDefaultColumn();
 
         modelBuilder.Entity<Course>()
