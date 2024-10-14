@@ -1,18 +1,51 @@
 ﻿services:
-  courses-db:
-    image: postgres
-    container_name: courses-db
+  courses-api:
+    build: ./api/courses_api
+    container_name: courses-api
     restart: always
-    shm_size: 128mb
     environment:
-      POSTGRES_USER: courses-db
-      POSTGRES_PASSWORD: courses-db
-    volumes:
-      - courses-data:/var/lib/postgresql/data
+      SPRING_DATASOURCE_URL: jdbc:postgresql://courses-api-db:5432/courses-api-db
+      SPRING_DATASOURCE_USERNAME: courses-api-db
+      SPRING_DATASOURCE_PASSWORD: courses-api-db
     networks:
       - eduplus-network
     ports:
-      - "5432:5432"
+      - "8080:8080"
+    depends_on:
+      - courses-api-db
+  
+  comments-api:
+    build: ./api/comments_api
+    container_name: comments-api
+    restart: always
+    environment:
+      SPRING_DATA_MONGODB_HOST: comments-api-db
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_DATABASE: comments-api-db
+      SPRING_DATA_MONGODB_USERNAME: comments-api-db
+      SPRING_DATA_MONGODB_PASSWORD: comments-api-db
+      SPRING_DATA_MONGODB_AUTHENTICATION-DATABASE: admin
+      COURSES_API_URL: http://courses-api:8080
+      SERVER_PORT: 8081
+    networks:
+      - eduplus-network
+    ports:
+      - "8081:8081"
+    depends_on:
+      - comments-api-db
+
+  api-gateway:
+    build: ./api_gateway
+    container_name: api-gateway
+    restart: always
+    environment:
+      COURSES_API_URL: http://courses-api:8080
+      COMMENTS_API_URL: http://comments-api:8081
+      SERVER_PORT: 9000
+    networks:
+      - eduplus-network
+    ports:
+      - "9000:9000"
   
   courses:
     build: ./api/Courses
@@ -23,7 +56,7 @@
     networks:
       - eduplus-network
     ports:
-      - "8080:8080"
+      - "8082:8082"
     depends_on:
       - courses-db
   
@@ -40,24 +73,8 @@
     networks:
       - eduplus-network
     ports:
-      - "5433:5432"
-  
-  courses-api:
-    build: ./api/courses_api
-    container_name: courses-api
-    restart: always
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://courses-api-db:5432/courses-api-db
-      SPRING_DATASOURCE_USERNAME: courses-api-db
-      SPRING_DATASOURCE_PASSWORD: courses-api-db
-      SERVER_PORT: 8081
-    networks:
-      - eduplus-network
-    ports:
-      - "8081:8081"
-    depends_on:
-      - courses-api-db
-  
+      - "5432:5432"
+
   comments-api-db:
     image: mongo
     container_name: comments-api-db
@@ -72,47 +89,29 @@
       - eduplus-network
     ports:
       - "27017:27017"
-  
-  comments-api:
-    build: ./api/comments_api
-    container_name: comments-api
+
+  courses-db:
+    image: postgres
+    container_name: courses-db
     restart: always
+    shm_size: 128mb
     environment:
-      SPRING_DATA_MONGODB_HOST: comments-api-db
-      SPRING_DATA_MONGODB_PORT: 27017
-      SPRING_DATA_MONGODB_DATABASE: comments-api-db
-      SPRING_DATA_MONGODB_USERNAME: comments-api-db
-      SPRING_DATA_MONGODB_PASSWORD: comments-api-db
-      SPRING_DATA_MONGODB_AUTHENTICATION-DATABASE: admin
-      COURSES_API_URL: http://courses-api:8081
-      SERVER_PORT: 8082
+      POSTGRES_USER: courses-db
+      POSTGRES_PASSWORD: courses-db
+    volumes:
+      - courses-data:/var/lib/postgresql/data
     networks:
       - eduplus-network
     ports:
-      - "8082:8082"
-    depends_on:
-      - comments-api-db
-  
-  api-gateway:
-    build: ./api_gateway
-    container_name: api-gateway
-    restart: always
-    environment:
-      COURSES_API_URL: http://courses-api:8081
-      COMMENTS_API_URL: http://comments-api:8082
-      SERVER_PORT: 9000
-    networks:
-      - eduplus-network
-    ports:
-      - "9000:9000"
+      - "5433:5432"
 
 volumes:
-  courses-data:
-    name: courses-data
   courses-api-data:
     name: courses-api-data
   comments-api-data:
     name: comments-api-data
+  courses-data:
+    name: courses-data
 
 networks:
   eduplus-network:
