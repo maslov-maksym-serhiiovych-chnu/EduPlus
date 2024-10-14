@@ -30,6 +30,7 @@ public class CommentsController(CommentService service) : ControllerBase
     public async Task<ActionResult<Comment>> Create(Comment comment)
     {
         int id = await service.CreateAsync(comment);
+        comment.Id = id;
         return CreatedAtAction(nameof(Read), new { id }, comment);
     }
 
