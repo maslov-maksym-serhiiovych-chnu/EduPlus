@@ -8,7 +8,7 @@ public class DeleteTaskCommandHandler(TasksDbContext context) : IRequestHandler<
 {
     public async Task Handle(DeleteTaskCommand request, CancellationToken cancellationToken)
     {
-        TaskModel? task = await context.Tasks.FindAsync([request.Id], cancellationToken: cancellationToken);
+        TaskModel? task = await context.Tasks.FindAsync([request.Id], cancellationToken);
         if (task == null)
         {
             return;

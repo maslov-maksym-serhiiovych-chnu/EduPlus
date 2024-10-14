@@ -8,7 +8,7 @@ public class UpdateTaskCommandHandler(TasksDbContext context) : IRequestHandler<
 {
     public async Task Handle(UpdateTaskCommand request, CancellationToken cancellationToken)
     {
-        TaskModel? task = await context.Tasks.FindAsync([request.Id], cancellationToken: cancellationToken);
+        TaskModel? task = await context.Tasks.FindAsync([request.Id], cancellationToken);
         if (task == null)
         {
             return;
