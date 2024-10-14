@@ -52,6 +52,7 @@
     container_name: courses
     restart: always
     environment:
+      ASPNETCORE_HTTP_PORTS: 8082
       ASPNETCORE_ENVIRONMENT: Development
     networks:
       - eduplus-network
