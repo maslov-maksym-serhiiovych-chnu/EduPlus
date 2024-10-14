@@ -1,7 +1,7 @@
-﻿using BLL.Exceptions;
+﻿using BLL.DTOs;
+using BLL.Exceptions;
 using DAL.Data;
 using DAL.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Services;
 
@@ -14,9 +14,34 @@ public class CourseService(CoursesDbContext context)
         return await context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Course>> ReadAllAsync()
+    public IEnumerable<Course> ReadAll(CourseQueryParameters parameters)
     {
-        var courses = await context.Courses.ToArrayAsync();
+        string? searchTerm = parameters.SearchTerm;
+        var courses = context.Courses.AsQueryable();
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            courses = courses.Where(c => c.Name.Contains(searchTerm) ||
+                                         (c.Description != null && c.Description.Contains(searchTerm)));
+        }
+
+        string? sortBy = parameters.SortBy;
+        if (!string.IsNullOrWhiteSpace(sortBy))
+        {
+            courses = sortBy.ToLower() switch
+            {
+                "name" => courses.OrderBy(c => c.Name),
+                "description" => courses.OrderBy(c => c.Description),
+                _ => courses
+            };
+        }
+
+        int pageIndex = parameters.PageIndex, pageSize = parameters.PageSize;
+        if (pageIndex < 1)
+        {
+            pageIndex = 1;
+        }
+
+        courses = courses.Skip((pageIndex - 1) * pageSize).Take(pageSize);
         return courses;
     }
 

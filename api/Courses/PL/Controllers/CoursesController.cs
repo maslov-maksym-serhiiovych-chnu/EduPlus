@@ -1,4 +1,5 @@
-﻿using BLL.Services;
+﻿using BLL.DTOs;
+using BLL.Services;
 using DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +11,9 @@ public class CoursesController(CourseService service) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Course>>> ReadAll()
+    public ActionResult<IEnumerable<Course>> ReadAll([FromQuery] CourseQueryParameters parameters)
     {
-        var recipes = await service.ReadAllAsync();
+        var recipes = service.ReadAll(parameters);
         return Ok(recipes);
     }
 
@@ -27,7 +28,7 @@ public class CoursesController(CourseService service) : ControllerBase
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<ActionResult<Course>> Create(Course course)
+    public async Task<ActionResult<Course>> Create([FromBody] Course course)
     {
         int id = await service.CreateAsync(course);
         return CreatedAtAction(nameof(Read), new { id }, course);
@@ -36,7 +37,7 @@ public class CoursesController(CourseService service) : ControllerBase
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update(int id, Course course)
+    public async Task<IActionResult> Update(int id, [FromBody] Course course)
     {
         await service.UpdateAsync(id, course);
 
