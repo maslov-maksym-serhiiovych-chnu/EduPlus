@@ -2,4 +2,4 @@
 
 namespace Application.Commands.Tasks;
 
-public record Delete(int Id) : IRequest;
+public record DeleteTask(int Id) : IRequest;
