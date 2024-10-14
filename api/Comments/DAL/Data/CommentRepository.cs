@@ -18,8 +18,8 @@ public class CommentRepository(string? connectionString)
     {
         await using SqliteConnection connection = new(connectionString);
         await connection.OpenAsync();
-        const string sql = "INSERT INTO comments (content) VALUES (@content)";
-        object parameter = new { comment.Content };
+        const string sql = "INSERT INTO comments (content) VALUES (@content); SELECT last_insert_rowid()";
+        object parameter = new { content = comment.Content };
         int id = await connection.ExecuteScalarAsync<int>(sql, parameter);
         return id;
     }
@@ -48,7 +48,7 @@ public class CommentRepository(string? connectionString)
         await using SqliteConnection connection = new(connectionString);
         await connection.OpenAsync();
         const string sql = "UPDATE comments SET content = @content WHERE id = @id";
-        object parameters = new { comment.Content, Id = id };
+        object parameters = new { content = comment.Content, id };
         await connection.ExecuteAsync(sql, parameters);
     }
 
