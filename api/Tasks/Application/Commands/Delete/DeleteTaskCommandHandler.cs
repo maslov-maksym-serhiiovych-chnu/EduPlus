@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using Domain.Exceptions;
+using Domain.Models;
 using Infrastructure.Persistence;
 using MediatR;
 
@@ -11,7 +12,7 @@ public class DeleteTaskCommandHandler(TasksDbContext context) : IRequestHandler<
         TaskModel? task = await context.Tasks.FindAsync([request.Id], cancellationToken);
         if (task == null)
         {
-            return;
+            throw new TaskNotFoundException("task not found by id: " + request.Id);
         }
 
         context.Tasks.Remove(task);
