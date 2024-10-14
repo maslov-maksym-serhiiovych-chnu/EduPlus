@@ -1,17 +1,11 @@
 ﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
-COPY PL/PL.csproj PL/
-COPY BLL/BLL.csproj BLL/
-COPY DAL/DAL.csproj DAL/
-RUN dotnet restore PL/PL.csproj
-COPY . .
-WORKDIR PL
-RUN dotnet build PL.csproj -c Release -o /app/build
+WORKDIR /src
 
-FROM build AS publish
-RUN dotnet publish PL.csproj -c Release -o /app/publish
+COPY . .
+WORKDIR /src/PL
+RUN dotnet publish -c release -o /app
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app .
 ENTRYPOINT ["dotnet", "PL.dll"]
