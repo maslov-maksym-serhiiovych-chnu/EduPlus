@@ -12,6 +12,11 @@ builder.Services.AddScoped<CommentRepository>(_ => new CommentRepository(
 builder.Services.AddScoped<CommentService>();
 
 WebApplication app = builder.Build();
+
+using IServiceScope scope = app.Services.CreateScope();
+CommentRepository repository = scope.ServiceProvider.GetRequiredService<CommentRepository>();
+await repository.InitializeAsync();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
