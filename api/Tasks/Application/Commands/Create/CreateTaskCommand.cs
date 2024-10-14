@@ -1,5 +1,6 @@
-﻿using MediatR;
+﻿using Domain.Models;
+using MediatR;
 
 namespace Application.Commands.Create;
 
-public record CreateTaskCommand(string Name, string Description) : IRequest<int>;
+public record CreateTaskCommand(TaskModel Task) : IRequest<int>;

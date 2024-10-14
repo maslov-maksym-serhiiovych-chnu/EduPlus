@@ -14,8 +14,8 @@ public class UpdateTaskCommandHandler(TasksDbContext context) : IRequestHandler<
             return;
         }
 
-        task.Name = request.Name;
-        task.Description = request.Description;
+        task.Name = request.Task.Name;
+        task.Description = request.Task.Description;
         await context.SaveChangesAsync(cancellationToken);
     }
 }

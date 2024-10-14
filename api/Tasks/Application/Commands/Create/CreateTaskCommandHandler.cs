@@ -1,5 +1,4 @@
-﻿using Domain.Models;
-using Infrastructure.Persistence;
+﻿using Infrastructure.Persistence;
 using MediatR;
 
 namespace Application.Commands.Create;
@@ -8,12 +7,7 @@ public class CreateTaskCommandHandler(TasksDbContext context) : IRequestHandler<
 {
     public async Task<int> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
     {
-        TaskModel task = new()
-        {
-            Name = request.Name,
-            Description = request.Description
-        };
-        await context.Tasks.AddRangeAsync(task);
+        await context.Tasks.AddRangeAsync(request.Task);
         int id = await context.SaveChangesAsync(cancellationToken);
         return id;
     }
