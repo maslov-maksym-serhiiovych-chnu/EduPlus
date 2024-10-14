@@ -60,6 +60,18 @@
     depends_on:
       - courses-db
   
+  comments:
+    build: ./api/Comments
+    container_name: comments
+    restart: always
+    environment:
+      ASPNETCORE_HTTP_PORTS: 8083
+      ASPNETCORE_ENVIRONMENT: Development
+    networks:
+      - eduplus-network
+    ports:
+      - "8083:8083"
+  
   courses-api-db:
     image: postgres
     container_name: courses-api-db
