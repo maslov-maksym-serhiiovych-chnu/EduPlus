@@ -1,5 +1,8 @@
-﻿obj
-bin
-build
+﻿build
 .idea
 .gradle
+
+obj
+bin
+
+*.db
