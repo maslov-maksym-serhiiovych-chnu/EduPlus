@@ -74,7 +74,7 @@
       - "8083:8083"
   
   tasks:
-    build: ./api/Courses
+    build: ./api/Tasks
     container_name: tasks
     restart: always
     environment:
