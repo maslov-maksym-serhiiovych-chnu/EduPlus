@@ -13,8 +13,8 @@ public class CoursesController(CourseService service) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public ActionResult<IEnumerable<Course>> ReadAll([FromQuery] CourseQueryParameters parameters)
     {
-        var recipes = service.ReadAll(parameters);
-        return Ok(recipes);
+        var courses = service.ReadAll(parameters);
+        return Ok(courses);
     }
 
     [HttpGet("{id:int}")]
