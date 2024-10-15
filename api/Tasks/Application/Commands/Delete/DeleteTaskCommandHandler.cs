@@ -1,6 +1,6 @@
 ﻿using Domain.Exceptions;
 using Domain.Models;
-using Infrastructure.Persistence;
+using Infrastructure.Data;
 using MediatR;
 
 namespace Application.Commands.Delete;

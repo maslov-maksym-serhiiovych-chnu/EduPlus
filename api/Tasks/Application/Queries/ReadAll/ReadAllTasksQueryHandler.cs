@@ -1,5 +1,5 @@
 ﻿using Domain.Models;
-using Infrastructure.Persistence;
+using Infrastructure.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

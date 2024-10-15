@@ -1,7 +1,7 @@
 ﻿using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Persistence;
+namespace Infrastructure.Data;
 
 public class TasksDbContext(DbContextOptions<TasksDbContext> options) : DbContext(options)
 {
