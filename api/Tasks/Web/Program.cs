@@ -1,5 +1,5 @@
 using System.Reflection;
-using Infrastructure.Persistence;
+using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Web.Middlewares;
 
