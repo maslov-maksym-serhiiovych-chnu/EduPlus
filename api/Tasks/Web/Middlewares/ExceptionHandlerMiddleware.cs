@@ -1,6 +1,6 @@
 ﻿using Domain.Exceptions;
 
-namespace Presentation.Middlewares;
+namespace Web.Middlewares;
 
 public class ExceptionHandlerMiddleware(RequestDelegate next, ILogger<ExceptionHandlerMiddleware> logger)
 {
