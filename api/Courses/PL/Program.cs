@@ -22,5 +22,3 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.MapControllers();
 app.Run();
-
-public partial class Program;
