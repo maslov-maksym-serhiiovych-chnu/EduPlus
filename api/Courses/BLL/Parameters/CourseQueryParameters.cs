@@ -1,4 +1,4 @@
-﻿namespace BLL.DTOs;
+﻿namespace BLL.Parameters;
 
 public class CourseQueryParameters
 {

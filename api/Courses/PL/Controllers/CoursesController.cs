@@ -1,4 +1,4 @@
-﻿using BLL.DTOs;
+﻿using BLL.Parameters;
 using BLL.Services;
 using DAL.Models;
 using Microsoft.AspNetCore.Mvc;
