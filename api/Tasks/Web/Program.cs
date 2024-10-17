@@ -1,4 +1,4 @@
-using System.Reflection;
+using Application.Commands.Create;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Web.Middlewares;
@@ -10,7 +10,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<TasksDbContext>(options => options.UseNpgsql(
     builder.Configuration.GetConnectionString("DefaultConnection")
 ));
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateTaskCommandHandler).Assembly));
 
 WebApplication app = builder.Build();
 if (app.Environment.IsDevelopment())
